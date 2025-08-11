@@ -48,7 +48,7 @@ fetch('http://localhost:3000/obj-files')
         gltfLoader.load(objPath, (gltf) => {
             const root = gltf.scene;
 
-            const material = new THREE.MeshStandardMaterial({color: 0xed0713});
+            const material = new THREE.MeshStandardMaterial({color: '#'+(Math.random() * 0xFFFFFF << 0).toString(16).padStart(6, '0')});
             root.scale.setScalar(0.001);
             
             // Travserse group children (Mesh)
@@ -68,7 +68,7 @@ fetch('http://localhost:3000/obj-files')
 
 // Add light
 const color = 0xFFFFFF;
-const intensity = 100;
+const intensity = 2;
 const light = new THREE.DirectionalLight(color, intensity);
 light.position.set(-15, -15, 20);
 scene.add(light);
