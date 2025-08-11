@@ -1,0 +1,152 @@
+# Blender 4.4.3 MTL File: 'house_3x3_lv1_001.blend'
+# www.blender.org
+
+newmtl Bricks_058
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd /home/hafl/Bibliothek/Bibliothek Texturen/Bricks/Bricks 058 2K/Bricks058_2K-JPG_Color.jpg
+map_Bump -bm 5.000000 /home/hafl/Bibliothek/Bibliothek Texturen/Bricks/Bricks 058 2K/Bricks058_2K-JPG_NormalGL.jpg
+
+newmtl Fensterplastik
+Ns 562.500000
+Ka 0.500000 0.500000 0.500000
+Kd 0.900000 0.900000 0.900000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+
+newmtl Gusseisen
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.000000 0.000000 0.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+
+newmtl RoofingTiles004
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd /home/hafl/Bibliothek/Bibliothek Texturen/Roofs/RoofingTiles 004 2K/RoofingTiles004_2K-JPG_Color.jpg
+map_Bump -bm 1.000000 /home/hafl/Bibliothek/Bibliothek Texturen/Roofs/RoofingTiles 004 2K/RoofingTiles004_2K-JPG_NormalGL.jpg
+
+newmtl Tiles_045
+Ns 22.499992
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd /home/hafl/Bibliothek/Bibliothek Texturen/Tiles/Tiles045_2K-JPG/Tiles045_2K-JPG_Color.jpg
+map_Bump -bm 1.000000 /home/hafl/Bibliothek/Bibliothek Texturen/Tiles/Tiles045_2K-JPG/Tiles045_2K-JPG_NormalGL.jpg
+
+newmtl WoodFloor_023
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd /home/hafl/Bibliothek/Bibliothek Texturen/Wood/WoodFloor023_2K-JPG/WoodFloor023_2K-JPG_Color.jpg
+map_Ns /home/hafl/Bibliothek/Bibliothek Texturen/Wood/WoodFloor023_2K-JPG/WoodFloor023_2K-JPG_Roughness.jpg
+map_Bump -bm 1.000000 /home/hafl/Bibliothek/Bibliothek Texturen/Wood/WoodFloor023_2K-JPG/WoodFloor023_2K-JPG_NormalGL.jpg
+
+newmtl WoodFloor_027
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd /home/hafl/Bibliothek/Bibliothek Texturen/Wood/WoodFloor027_2K-JPG/WoodFloor027_2K-JPG_Color.jpg
+map_Bump -bm 1.000000 /home/hafl/Bibliothek/Bibliothek Texturen/Wood/WoodFloor027_2K-JPG/WoodFloor027_2K-JPG_NormalGL.jpg
+
+newmtl WoodSiding_005
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd /home/hafl/Bibliothek/Bibliothek Texturen/Wood/WoodSiding005_2K-JPG/WoodSiding005_2K-JPG_Color.jpg
+map_Bump -bm 1.000000 /home/hafl/Bibliothek/Bibliothek Texturen/Wood/WoodSiding005_2K-JPG/WoodSiding005_2K-JPG_NormalGL.jpg
+
+newmtl dark_oak
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd /home/hafl/Bibliothek/Bibliothek Texturen/Wood/dark_oak/Dark Brown Oak 1_baseColor.png
+map_Bump -bm 1.000000 /home/hafl/Bibliothek/Bibliothek Texturen/Wood/dark_oak/Dark Brown Oak 1_normal.png
+
+newmtl frame_window
+Ns 22.499992
+Ka 0.500000 0.500000 0.500000
+Kd 0.000330 0.000000 0.059506
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+
+newmtl glas
+Ns 1000.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 0.015000
+illum 9
+
+newmtl putz_grau
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Bump -bm 1.000000 /home/hafl/Bibliothek/Bibliothek Texturen/verputz/weiss_fein/White Plaster 01_normal.png
+
+newmtl putz_weiss
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Bump -bm 1.000000 /home/hafl/Bibliothek/Bibliothek Texturen/verputz/weiss_fein/White Plaster 01_normal.png
+
+newmtl stone_tiles_02
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd /home/hafl/Bibliothek/Bibliothek Texturen/floors/stone_tiles_02_4k/textures/stone_tiles_02_diff_4k.jpg
+map_Bump -bm 1.000000 /home/hafl/Bibliothek/Bibliothek Texturen/floors/stone_tiles_02_4k/textures/stone_tiles_02_nor_gl_4k.exr
