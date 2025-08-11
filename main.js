@@ -6,6 +6,9 @@ import {OBJLoader} from 'three/addons/loaders/OBJLoader.js';
 const canvas = document.querySelector('#c');
 const renderer = new THREE.WebGLRenderer({antialias: true, canvas});
 
+// Better resolution
+renderer.setSize( window.innerWidth, window.innerHeight );
+
 // Setup a camera
 const fov = 75;
 const aspect = window.innerWidth / window.innerHeight;
@@ -32,8 +35,8 @@ fetch('http://localhost:3000/obj-files')
 
     for(const file of files){
         const objPath = "exports/"+file;
-        console.log(objPath)
         objLoader.load(objPath, (root) => {
+            root.scale.setScalar(0.001);
             scene.add(root);
         });
 
@@ -42,5 +45,21 @@ fetch('http://localhost:3000/obj-files')
 );
 
 
-renderer.render(scene, camera);
 
+// To see the 3d Model
+const color = 0xFFFFFF;
+const intensity = 100;
+const light = new THREE.DirectionalLight(color, intensity);
+light.position.set(-15, -15, 20);
+scene.add(light);
+
+function animate() {
+
+	requestAnimationFrame( animate );
+
+
+	renderer.render( scene, camera );
+
+}
+
+animate();
