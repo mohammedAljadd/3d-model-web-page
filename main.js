@@ -36,7 +36,16 @@ fetch('http://localhost:3000/obj-files')
     for(const file of files){
         const objPath = "exports/"+file;
         objLoader.load(objPath, (root) => {
+            const material = new THREE.MeshStandardMaterial({color: 0xed0713});
             root.scale.setScalar(0.001);
+            
+            // Travserse group children (Mesh)
+            root.traverse(child => {
+                if(child.isMesh){
+                    child.material = material;
+                }
+            })
+
             scene.add(root);
         });
 
@@ -45,8 +54,7 @@ fetch('http://localhost:3000/obj-files')
 );
 
 
-
-// To see the 3d Model
+// Add light
 const color = 0xFFFFFF;
 const intensity = 100;
 const light = new THREE.DirectionalLight(color, intensity);
