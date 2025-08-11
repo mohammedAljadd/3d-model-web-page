@@ -1,7 +1,6 @@
 import * as THREE from 'three';
-import {OBJLoader} from 'three/addons/loaders/OBJLoader.js';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-
+import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
 // Renderer
 const canvas = document.querySelector('#c');
 const renderer = new THREE.WebGLRenderer({antialias: true, canvas});
@@ -35,17 +34,20 @@ controls.update(); //controls.update() must be called after any manual changes t
 const scene = new THREE.Scene();
 
 
-// To load obj files
-const objLoader = new OBJLoader();
+// To load GLTF files
+const gltfLoader = new GLTFLoader();
 
-// Fetch obj files from express
+// Fetch .gltf files from express
 fetch('http://localhost:3000/obj-files')
   .then(res => res.json())
   .then(files => {
 
     for(const file of files){
-        const objPath = "exports/"+file;
-        objLoader.load(objPath, (root) => {
+        const objPath = "gltf_files/"+file;
+        
+        gltfLoader.load(objPath, (gltf) => {
+            const root = gltf.scene;
+
             const material = new THREE.MeshStandardMaterial({color: 0xed0713});
             root.scale.setScalar(0.001);
             
