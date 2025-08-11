@@ -8,9 +8,17 @@ const app = express();
 
 app.use(cors());
 
+
+let objFiles = [];
+
 app.get('/obj-files', (req, response) => {
   const files = fs.readdirSync("public/exports");
-  response.json(files);
+  for(const file of files){
+    if(file.endsWith('.obj')){
+        objFiles.push(file);
+    }
+  }
+  response.json(objFiles);
 });
 
 

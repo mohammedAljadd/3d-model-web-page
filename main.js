@@ -22,9 +22,25 @@ camera.lookAt(0, 0, 0);
 const scene = new THREE.Scene();
 
 
+// To load obj files
+const objLoader = new OBJLoader();
 
 // Fetch obj files from express
 fetch('http://localhost:3000/obj-files')
   .then(res => res.json())
-  .then(files =>
-    console.log(files))
+  .then(files => {
+
+    for(const file of files){
+        const objPath = "exports/"+file;
+        console.log(objPath)
+        objLoader.load(objPath, (root) => {
+            scene.add(root);
+        });
+
+    }
+  }
+);
+
+
+renderer.render(scene, camera);
+
