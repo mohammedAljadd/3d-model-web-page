@@ -158,6 +158,23 @@ document.getElementById('frontView').addEventListener('click', () => {
 
 
 
+
+const daynightButton = document.getElementById('toggleDayNight');
+let itsDay = true;
+daynightButton.addEventListener('click', () => {
+  if (itsDay) {
+    light.intensity = 0;
+     renderer.setClearColor(0x051654, 1) ;
+    daynightButton.textContent = 'Switch to Day';
+  } else {
+   
+    renderer.setClearColor( 0x91daff, 1);
+    light.intensity = 5;
+    daynightButton.textContent = 'Switch to Night';
+  }
+  itsDay = !itsDay;
+});
+
 // Add helper to better position the spotlight
 const helper = new THREE.SpotLightHelper(spotLight);
 scene.add(helper);
