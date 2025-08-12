@@ -2,6 +2,12 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
 
+
+
+// File paths
+
+
+
 // Renderer
 const canvas = document.querySelector('#c');
 const renderer = new THREE.WebGLRenderer({antialias: true, canvas});
@@ -41,40 +47,27 @@ scene.add(axesHelper);
 // To load GLTF files
 const gltfLoader = new GLTFLoader();
 
-    
-// Fetch .gltf files from express
-fetch('http://localhost:3000/obj-files')
-  .then(res => res.json())
-  .then(files => {
-    
-    for(const file of files){
-        const objPath = "gltf_files/"+file;
-        
-        gltfLoader.load(objPath, (gltf) => {
-            const root = gltf.scene;
+const file = "house.gltf";
 
-            const material = new THREE.MeshStandardMaterial({color: '#'+(Math.random() * 0xFFFFFF << 0).toString(16).padStart(6, '0')});
-            root.scale.setScalar(0.001);
-            
-            // Travserse group children (Mesh)
-            root.traverse(child => {
+gltfLoader.load(file, (gltf) => {
+  const root = gltf.scene;
 
-                
-
-                if(child.isMesh){
-                    
-                    child.material = material;
-
-                 
-                }
-            })
-
-            scene.add(root);
-        });
-
+  root.scale.setScalar(0.001);
+  
+  // Travserse group children (Mesh)
+  root.traverse(child => {
+    const material = new THREE.MeshStandardMaterial({color: '#'+(Math.random() * 0xFFFFFF << 0).toString(16).padStart(6, '0')});
+  
+    if(child.isMesh){
+      child.material = material;
     }
-  }
-);
+  })
+
+  scene.add(root);
+  });
+
+
+
 
 
 // Add light
@@ -155,3 +148,4 @@ function animate() {
 }
 
 animate();
+
