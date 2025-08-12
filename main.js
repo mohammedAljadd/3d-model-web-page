@@ -32,7 +32,7 @@ const controls = new OrbitControls( camera, renderer.domElement );
 
 
 // Seeing the house from a good angle
-camera.position.set(3, -10, 5);
+camera.position.set(-10, -25, 20);
 camera.lookAt(0, 0, 0);
 
 controls.update(); //controls.update() must be called after any manual changes to the camera's transform
@@ -75,8 +75,9 @@ const spotLight = new THREE.SpotLight(0xffffff, 250);
 spotLight.position.set(15, -50, 20);
 spotLight.decay = 1;
 spotLight.distance=75;
-spotLight.penumbra = 0.1
-spotLight.angle = Math.PI / 8;
+spotLight.penumbra = 0.1;
+const degrees = 35;
+spotLight.angle = degrees * (Math.PI / 180);
 
 
 
@@ -127,6 +128,17 @@ lightZSlider.addEventListener('input', () => {
   const value = Number(lightZSlider.value);
   lightZDisplay.textContent = value;
   spotLight.position.z = value;  
+});
+
+
+
+const lightAngleSlider = document.getElementById('lightAngle');
+const lightAngleDisplay = document.getElementById('lightAngleValue');
+
+lightAngleSlider.addEventListener('input', () => {
+  const value = Number(lightAngleSlider.value);
+  lightAngleDisplay.textContent = value;
+  spotLight.angle = value * (Math.PI / 180); 
 });
 
 
