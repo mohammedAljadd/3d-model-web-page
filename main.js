@@ -87,7 +87,7 @@ scene.add(spotLight.target);
 
 // Ambient light 
 const light = new THREE.AmbientLight( 0x404040 );
-light.intensity = 10;
+light.intensity = 2;
 scene.add( light );
 
 
@@ -146,6 +146,18 @@ lightAngleSlider.addEventListener('input', () => {
 });
 
 
+document.getElementById('topView').addEventListener('click', () => {
+    camera.position.set(0, 0, 35);
+    controls.update();
+});
+
+document.getElementById('frontView').addEventListener('click', () => {
+    camera.position.set(0, -35, 5);
+    controls.update();
+});
+
+
+
 // Add helper to better position the spotlight
 const helper = new THREE.SpotLightHelper(spotLight);
 scene.add(helper);
@@ -156,10 +168,10 @@ scene.add(spotLight);
 const texture = new THREE.TextureLoader().load( "textures/grass-min.png" );
 texture.wrapS = THREE.RepeatWrapping;
 texture.wrapT = THREE.RepeatWrapping;
-texture.repeat.set( 5, 5 );
+texture.repeat.set( 100, 100 );
 
 // Create a flat surface
-const geometry = new THREE.PlaneGeometry( 100, 100 );
+const geometry = new THREE.PlaneGeometry( 1000, 1000 );
 const material = new THREE.MeshStandardMaterial({ map: texture });
 const plane = new THREE.Mesh( geometry, material );
 
