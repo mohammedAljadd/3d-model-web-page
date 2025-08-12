@@ -11,6 +11,7 @@ import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
 // Renderer
 const canvas = document.querySelector('#c');
 const renderer = new THREE.WebGLRenderer({antialias: true, canvas});
+renderer.setClearColor( 0x91daff, 1);
 
 // Better resolution
 renderer.setSize( window.innerWidth, window.innerHeight );
@@ -23,7 +24,7 @@ renderer.setSize( window.innerWidth, window.innerHeight );
 const fov = 75;
 const aspect = window.innerWidth / window.innerHeight;
 const near = 0.1;
-const far = 1000;
+const far = 2000;
 const camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
 
 
@@ -84,7 +85,10 @@ spotLight.angle = degrees * (Math.PI / 180);
 scene.add(spotLight.target);
 
 
-
+// Ambient light 
+const light = new THREE.AmbientLight( 0x404040 );
+light.intensity = 10;
+scene.add( light );
 
 
 
@@ -147,6 +151,19 @@ const helper = new THREE.SpotLightHelper(spotLight);
 scene.add(helper);
 
 scene.add(spotLight);
+
+
+const texture = new THREE.TextureLoader().load( "textures/grass-min.png" );
+texture.wrapS = THREE.RepeatWrapping;
+texture.wrapT = THREE.RepeatWrapping;
+texture.repeat.set( 5, 5 );
+
+// Create a flat surface
+const geometry = new THREE.PlaneGeometry( 100, 100 );
+const material = new THREE.MeshStandardMaterial({ map: texture });
+const plane = new THREE.Mesh( geometry, material );
+
+scene.add( plane );
 
 
 
