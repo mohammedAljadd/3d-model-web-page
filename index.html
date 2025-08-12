@@ -12,12 +12,48 @@
         }
 
     </style>
+
+
+
+
   </head>
-  <body>
+
+
+
+
 
     <body>
-        <canvas id="c"></canvas>
-    </body>
+
+                <div class="control-group">
+                    <label>Intensity: <span class="value-display" id="intensityValue">250</span></label>
+                    <input type="range" id="intensity" min="0" max="350" value="450">
+                </div>
+
+
+                <div class="control-group">
+                    <label>light-x: <span class="value-display" id="lightXValue">15</span></label>
+                    <input type="range" id="lightX" min="-50" max="50" value="15">
+                </div>
+
+                <div class="control-group">
+                    <label>light-y: <span class="value-display" id="lightYValue">-50</span></label>
+                    <input type="range" id="lightY" min="-100" max="100" value="-50">
+                </div>
+
+
+                <div class="control-group">
+                    <label>light-z: <span class="value-display" id="lightZValue">20</span></label>
+                    <input type="range" id="lightZ" min="-5" max="50" value="20">
+                </div>
+
+
+                <canvas id="c"></canvas>
+         
+   
+
+       
+        
+  
 
 
     <script type="module" src="/main.js"></script>
