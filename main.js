@@ -47,7 +47,7 @@ scene.add(axesHelper);
 
 // To load GLTF file of house
 const gltfLoader = new GLTFLoader();
-const file = "house.gltf";
+const file = "4_door_uv.gltf";
 
 // Choose parts to apply texture of brick wall
 const wallParts = ["Waende_OG", "Waende_EG"];
@@ -74,7 +74,23 @@ var dachMaterial = new THREE.MeshStandardMaterial( { map: dachTexture } );
 
 
 
+const doorTexture = new THREE.TextureLoader().load(
+  'textures/door.png');
+
+doorTexture.wrapS = THREE.RepeatWrapping;
+doorTexture.wrapT = THREE.RepeatWrapping;
+
+doorTexture.rotation = Math.PI / 2; 
+doorTexture.repeat.set(1, 1);
+
+
+var doorMaterial = new THREE.MeshStandardMaterial( { map: doorTexture } );
+
+
+
+ 
 let doorPivot = null; // for opening the door
+let backDoorPivot = null; // for opening the door
 let house;
 
 
@@ -88,6 +104,7 @@ gltfLoader.load(file, (gltf) => {
     if(child.isMesh){
       if(wallParts.includes(child.name)){
         child.material = wallMaterial;
+         
       }
 
       else if(child.name === 'F_Glas'){
@@ -114,19 +131,11 @@ gltfLoader.load(file, (gltf) => {
       }
       
 
-      else if (child.name.includes('Front_Door')){
-        let color = "fc0303";
-        //color = "0x403434";
-        const material = new THREE.MeshStandardMaterial({color: 0xfc0303});
-        child.material = material;
+      else if (child.name.includes('Door')){
+        child.material = doorMaterial;
       }
 
-      else if (child.name.includes('Door')){
-        let color = "fc0303";
-        //color = "0x403434";
-        const material = new THREE.MeshStandardMaterial({color: 0xfc0303});
-        child.material = material;
-      }
+
 
       
       
@@ -153,16 +162,21 @@ function doorPivotSetup() {
   if (!house) return null;
 
   const door = house.getObjectByName('Front_Door');
+  const backDoor = house.getObjectByName('Back_Door');
+  
   if (!door) return null;
 
   // Pivot group
   doorPivot = new THREE.Group();
+  backDoorPivot = new THREE.Group();
   
   // To get accurate bounding box
   door.updateMatrixWorld();
-  
+  backDoor.updateMatrixWorld();
+
   // Door's bbox
   const bbox = new THREE.Box3().setFromObject(door);
+  const backbbox = new THREE.Box3().setFromObject(backDoor);
   
   // Hinge point
   const hingePosition = new THREE.Vector3(
@@ -170,25 +184,45 @@ function doorPivotSetup() {
     bbox.min.y,
     (bbox.min.z + bbox.max.z) / 2 
   );
+
+  const backhingePosition = new THREE.Vector3(
+    backbbox.min.x,
+    backbbox.min.y,
+    (backbbox.min.z + backbbox.max.z) / 2 
+  );
   
   // converts hingePositin from world coordinates to the house local coordinates
   house.worldToLocal(hingePosition);
+  house.worldToLocal(backhingePosition);
+  
   
   // Setting pivoot position in the house’s local coordinates
   doorPivot.position.copy(hingePosition);
+  backDoorPivot.position.copy(backhingePosition);
+  
   
   // door original position
   const doorOriginalPosition = door.position.clone();
+  const backdoorOriginalPosition = door.position.clone();
   
   // temporarily
   house.remove(door);
+  house.remove(backDoor);
+  
   
   // Adjustong the door position relativly to pivot
   door.position.copy(doorOriginalPosition).sub(hingePosition);
+  backDoor.position.copy(backdoorOriginalPosition).sub(backhingePosition);
+  
   
   // Add door to pivot, after that we  pivot to house
   doorPivot.add(door);
   house.add(doorPivot);
+
+  backDoorPivot.add(backDoor);
+  house.add(backDoorPivot);
+
+  
   return doorPivot;
 }
 
@@ -366,6 +400,29 @@ openFrontDoorButton.addEventListener('click', () => {
     doorPivot.rotation.z = 0;
     isDoorClosed = true;
     openFrontDoorButton.textContent = 'Open Front Door';
+  }
+});
+
+
+
+const openBackDoorButton = document.getElementById('openBackDoor');
+let isBackDoorClosed = true;
+openBackDoorButton.addEventListener('click', () => {
+  if(!backDoorPivot) {
+    console.warn('Door pivot not initialized yet');
+    return;
+  }
+
+  const angle = Math.PI / 4; // 45 degres
+
+  if (isBackDoorClosed) {
+    backDoorPivot.rotation.z = -angle;
+    isBackDoorClosed = false;
+    openBackDoorButton.textContent = 'Close Back Door';
+  } else {
+    backDoorPivot.rotation.z = 0;
+    isBackDoorClosed = true;
+    openBackDoorButton.textContent = 'Open Back Door';
   }
 });
 
