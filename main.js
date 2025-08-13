@@ -101,6 +101,27 @@ const pointsMaterial = new THREE.PointsMaterial({ color: 0xfffaba, size: 1.5, si
 
 const starField = new THREE.Points(bufferGeometry, pointsMaterial);
 
+
+// Adding the moon for night view
+let moon_radius = 8;
+let moon_x = (Math.random() - 0.5) * 10;
+let moon_y = (Math.random()) * 2000; 
+let moon_z = (Math.random() - 0.5) * 10 +  700;
+
+const moonGeometry = new THREE.SphereGeometry(moon_radius, 32, 16);
+const moonMaterial = new THREE.MeshBasicMaterial({
+  color: 0xffffff
+});
+const moon = new THREE.Mesh(moonGeometry, moonMaterial);
+
+moon.position.set(moon_x, moon_y, moon_z);
+
+scene.add(moon);
+
+
+
+
+
 // Add light
 const spotLight = new THREE.SpotLight(0xffffff, 250);
 spotLight.position.set(15, -50, 20);
@@ -193,9 +214,10 @@ const daynightButton = document.getElementById('toggleDayNight');
 let itsDay = true;
 daynightButton.addEventListener('click', () => {
   if (itsDay) {
-    light.intensity = 0;
+    light.intensity = 1;
      renderer.setClearColor(0x051654, 1) ;
      scene.add(starField);
+     scene.add(moon);
     daynightButton.textContent = 'Switch to Day';
   } else {
    
@@ -203,6 +225,7 @@ daynightButton.addEventListener('click', () => {
 
     renderer.setClearColor( 0x91daff, 1);
     light.intensity = 5;
+    scene.remove(moon);
     daynightButton.textContent = 'Switch to Night';
   }
   itsDay = !itsDay;
