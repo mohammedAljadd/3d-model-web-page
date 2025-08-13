@@ -60,8 +60,19 @@ wallTexture.wrapT = THREE.RepeatWrapping;
 
 wallTexture.rotation = Math.PI / 2; 
 wallTexture.repeat.set(50, 50);
-
 var wallMaterial = new THREE.MeshBasicMaterial( { map: wallTexture } );
+
+const dachTexture = new THREE.TextureLoader().load(
+  'textures/dach_texture.png');
+
+dachTexture.wrapS = THREE.RepeatWrapping;
+dachTexture.wrapT = THREE.RepeatWrapping;
+
+dachTexture.rotation = Math.PI / 2; 
+dachTexture.repeat.set(50, 50);
+var dachMaterial = new THREE.MeshBasicMaterial( { map: dachTexture } );
+
+
 
 gltfLoader.load(file, (gltf) => {
   const root = gltf.scene;
@@ -81,8 +92,37 @@ gltfLoader.load(file, (gltf) => {
         const material = new THREE.MeshStandardMaterial({color: 0xffffff, transparent: true, opacity: 0.5});
         child.material = material;
       }
+
+      else if (child.name === 'Dach'){
+        child.material = dachMaterial;
+      }
+
+      else if (child.name === 'Wege'){
+        const material = new THREE.MeshStandardMaterial({color: 0x5e5d5b});
+        child.material = material;
+      }
+      else if (child.name === 'Platten_Eingang'){
+        const material = new THREE.MeshStandardMaterial({color: 0xdbdbdb});
+        child.material = material;
+      }
+
+      else if (child.name === 'mauer'){
+        const material = new THREE.MeshStandardMaterial({color: 0xdbdbdb});
+        child.material = material;
+      }
+
+      else if (child.name === 'Doors'){
+        const material = new THREE.MeshStandardMaterial({color: 0x403434});
+        child.material = material;
+      }
+
+      
+      
+
+      
+
       else{
-        const material = new THREE.MeshStandardMaterial({color: '#'+(Math.random() * 0xFFFFFF << 0).toString(16).padStart(6, '0')});
+        const material = new THREE.MeshStandardMaterial({color: 0x3b3434});
     
         console.log(child.name);
       child.material = material;
