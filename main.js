@@ -196,6 +196,29 @@ scene.add( plane );
 
 
 
+
+// Responsive canvas
+function resize() {
+
+	const container = renderer.domElement.parentNode; // canvas parent node, col-10
+ 
+	if( container ) {
+
+  
+		const width = container.offsetWidth;
+		const height = container.offsetHeight;
+
+		renderer.setSize( width, height );
+
+		camera.aspect = width / height;
+		camera.updateProjectionMatrix();
+
+	}
+
+}
+
+window.addEventListener( 'resize', resize );
+
 function animate() {
 
 	requestAnimationFrame( animate );
@@ -206,4 +229,6 @@ function animate() {
 }
 
 animate();
+
+
 
