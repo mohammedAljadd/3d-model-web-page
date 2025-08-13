@@ -349,6 +349,14 @@ document.getElementById('backView').addEventListener('click', () => {
 
 
 
+const animateButton = document.getElementById('animateSceen');
+
+let isAnimating = false;
+
+animateButton.addEventListener('click', () => {
+  isAnimating = !isAnimating;
+  animateButton.textContent = isAnimating ? 'Stop Animation' : 'Animate';
+});
 
 const daynightButton = document.getElementById('toggleDayNight');
 let itsDay = true;
@@ -476,6 +484,10 @@ window.addEventListener( 'resize', resize );
 function animate() {
 
 	requestAnimationFrame( animate );
+
+   if (isAnimating && house) {
+        house.rotation.z += 0.01; 
+    }
 
 	renderer.render( scene, camera );
 
