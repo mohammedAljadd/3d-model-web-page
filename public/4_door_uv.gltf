@@ -784,9 +784,10 @@
 				{
 					"attributes":{
 						"POSITION":82,
-						"NORMAL":83
+						"NORMAL":83,
+						"TEXCOORD_0":84
 					},
-					"indices":84
+					"indices":85
 				}
 			]
 		},
@@ -795,10 +796,10 @@
 			"primitives":[
 				{
 					"attributes":{
-						"POSITION":85,
-						"NORMAL":86
+						"POSITION":86,
+						"NORMAL":87
 					},
-					"indices":87
+					"indices":88
 				}
 			]
 		}
@@ -1559,7 +1560,7 @@
 		{
 			"bufferView":82,
 			"componentType":5126,
-			"count":144,
+			"count":147,
 			"max":[
 				3409,
 				2805,
@@ -1575,17 +1576,23 @@
 		{
 			"bufferView":83,
 			"componentType":5126,
-			"count":144,
+			"count":147,
 			"type":"VEC3"
 		},
 		{
 			"bufferView":84,
+			"componentType":5126,
+			"count":147,
+			"type":"VEC2"
+		},
+		{
+			"bufferView":85,
 			"componentType":5123,
 			"count":276,
 			"type":"SCALAR"
 		},
 		{
-			"bufferView":85,
+			"bufferView":86,
 			"componentType":5126,
 			"count":144,
 			"max":[
@@ -1601,13 +1608,13 @@
 			"type":"VEC3"
 		},
 		{
-			"bufferView":86,
+			"bufferView":87,
 			"componentType":5126,
 			"count":144,
 			"type":"VEC3"
 		},
 		{
-			"bufferView":87,
+			"bufferView":88,
 			"componentType":5123,
 			"count":276,
 			"type":"SCALAR"
@@ -2108,44 +2115,50 @@
 		},
 		{
 			"buffer":0,
-			"byteLength":1728,
+			"byteLength":1764,
 			"byteOffset":52086400,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":1728,
-			"byteOffset":52088128,
+			"byteLength":1764,
+			"byteOffset":52088164,
+			"target":34962
+		},
+		{
+			"buffer":0,
+			"byteLength":1176,
+			"byteOffset":52089928,
 			"target":34962
 		},
 		{
 			"buffer":0,
 			"byteLength":552,
-			"byteOffset":52089856,
+			"byteOffset":52091104,
 			"target":34963
 		},
 		{
 			"buffer":0,
 			"byteLength":1728,
-			"byteOffset":52090408,
+			"byteOffset":52091656,
 			"target":34962
 		},
 		{
 			"buffer":0,
 			"byteLength":1728,
-			"byteOffset":52092136,
+			"byteOffset":52093384,
 			"target":34962
 		},
 		{
 			"buffer":0,
 			"byteLength":552,
-			"byteOffset":52093864,
+			"byteOffset":52095112,
 			"target":34963
 		}
 	],
 	"buffers":[
 		{
-			"byteLength":52094416,
+			"byteLength":52095664,
 			"uri":"4_door_uv.bin"
 		}
 	]

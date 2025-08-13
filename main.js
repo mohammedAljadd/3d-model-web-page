@@ -69,7 +69,7 @@ dachTexture.wrapS = THREE.RepeatWrapping;
 dachTexture.wrapT = THREE.RepeatWrapping;
 
 dachTexture.rotation = Math.PI / 2; 
-dachTexture.repeat.set(50, 50);
+dachTexture.repeat.set(15, 15);
 var dachMaterial = new THREE.MeshStandardMaterial( { map: dachTexture } );
 
 
@@ -335,6 +335,16 @@ document.getElementById('topView').addEventListener('click', () => {
 document.getElementById('frontView').addEventListener('click', () => {
     camera.position.set(0, -35, 5);
     controls.update();
+});
+
+
+document.getElementById('backView').addEventListener('click', () => {
+    camera.position.set(0, 35, 5);
+    camera.up.set(0, 0, 1);
+    camera.lookAt(0, 0, 0);
+    controls.target.set(0, 0, 0);
+    controls.update();
+
 });
 
 
