@@ -33,7 +33,7 @@ const controls = new OrbitControls( camera, renderer.domElement );
 
 
 // Seeing the house from a good angle
-camera.position.set(0, -13, 10);
+camera.position.set(0, -35, 10);
 camera.lookAt(0, 0, 0);
 
 controls.update(); //controls.update() must be called after any manual changes to the camera's transform
@@ -60,7 +60,7 @@ wallTexture.wrapT = THREE.RepeatWrapping;
 
 wallTexture.rotation = Math.PI / 2; 
 wallTexture.repeat.set(50, 50);
-var wallMaterial = new THREE.MeshBasicMaterial( { map: wallTexture } );
+var wallMaterial = new THREE.MeshStandardMaterial( { map: wallTexture } );
 
 const dachTexture = new THREE.TextureLoader().load(
   'textures/dach_texture.png');
@@ -70,7 +70,7 @@ dachTexture.wrapT = THREE.RepeatWrapping;
 
 dachTexture.rotation = Math.PI / 2; 
 dachTexture.repeat.set(50, 50);
-var dachMaterial = new THREE.MeshBasicMaterial( { map: dachTexture } );
+var dachMaterial = new THREE.MeshStandardMaterial( { map: dachTexture } );
 
 
 
@@ -170,9 +170,9 @@ const starField = new THREE.Points(bufferGeometry, pointsMaterial);
 
 // Adding the moon for night view
 let moon_radius = 8;
-let moon_x = (Math.random() - 0.5) * 10;
-let moon_y = (Math.random()) * 2000; 
-let moon_z = (Math.random() - 0.5) * 10 +  700;
+let moon_x = 0;
+let moon_y = 1000; 
+let moon_z = 700;
 
 const moonGeometry = new THREE.SphereGeometry(moon_radius, 32, 16);
 const moonMaterial = new THREE.MeshBasicMaterial({
@@ -182,87 +182,59 @@ const moon = new THREE.Mesh(moonGeometry, moonMaterial);
 
 moon.position.set(moon_x, moon_y, moon_z);
 
-scene.add(moon);
 
+// Add sun
+let sun_radius = 14;
+let sun_x = -100;
+let sun_y = 1000; 
+let sun_z = 700;
 
+const sunGeometry = new THREE.SphereGeometry(sun_radius, 32, 16);
+const sunMaterial = new THREE.MeshBasicMaterial({
+  color: 0xf0e80c
+});
+const sun = new THREE.Mesh(sunGeometry, sunMaterial);
 
+sun.position.set(sun_x, sun_y, sun_z);
+scene.add(sun);
 
-
-// Add light
-const spotLight = new THREE.SpotLight(0xffffff, 250);
-spotLight.position.set(15, -50, 20);
-spotLight.decay = 1;
-spotLight.distance=75;
-spotLight.penumbra = 0.1;
-const degrees = 35;
-spotLight.angle = degrees * (Math.PI / 180);
-
-
-
-scene.add(spotLight.target);
 
 
 // Ambient light 
 const light = new THREE.AmbientLight( 0x404040 );
-light.intensity = 2;
-scene.add( light );
+light.intensity = 10;
+scene.add(light);
+
+
+// Add bulb lights
+const bulbLight1 = new THREE.PointLight(0xf7f181, 1, 5);
+bulbLight1.intensity = 50;
+bulbLight1.position.set(5, -2, 7);
+
+const bulbLight2 = new THREE.PointLight(0xf7f181, 1, 5);
+bulbLight2.intensity = 50;
+bulbLight2.position.set(-1, -2, 7);
+
+const bulbLight3 = new THREE.PointLight(0xf7f181, 1, 10);
+bulbLight3.intensity = 50;
+bulbLight3.position.set(3, -2, 3);
+
+
+
+const bulbLight4 = new THREE.PointLight(0xf7f181, 1, 10);
+bulbLight4.intensity = 50;
+bulbLight4.position.set(-2, -2, 3);
+
+
+const bulbLight5 = new THREE.PointLight(0xf7f181, 1, 10);
+bulbLight5.intensity = 50;
+bulbLight5.position.set(-4, -2, 3);
+
 
 
 
 
 // Even listners
-const intensitySlider = document.getElementById('intensity');
-const intensityDisplay = document.getElementById('intensityValue');
-
-intensitySlider.addEventListener('input', () => {
-  const value = Number(intensitySlider.value);
-  intensityDisplay.textContent = value;
-  spotLight.intensity = value;  
-});
-
-
-const lightXSlider = document.getElementById('lightX');
-const lightXDisplay = document.getElementById('lightXValue');
-
-lightXSlider.addEventListener('input', () => {
-  const value = Number(lightXSlider.value);
-  lightXDisplay.textContent = value;
-  spotLight.position.x = value;  
-});
-
-
-const lightYSlider = document.getElementById('lightY');
-const lightYDisplay = document.getElementById('lightYValue');
-
-lightYSlider.addEventListener('input', () => {
-  const value = Number(lightYSlider.value);
-  lightYDisplay.textContent = value;
-  spotLight.position.y = value;  
-});
-
-
-
-const lightZSlider = document.getElementById('lightZ');
-const lightZDisplay = document.getElementById('lightZValue');
-
-lightZSlider.addEventListener('input', () => {
-  const value = Number(lightZSlider.value);
-  lightZDisplay.textContent = value;
-  spotLight.position.z = value;  
-});
-
-
-
-const lightAngleSlider = document.getElementById('lightAngle');
-const lightAngleDisplay = document.getElementById('lightAngleValue');
-
-lightAngleSlider.addEventListener('input', () => {
-  const value = Number(lightAngleSlider.value);
-  lightAngleDisplay.textContent = value;
-  spotLight.angle = value * (Math.PI / 180); 
-});
-
-
 document.getElementById('topView').addEventListener('click', () => {
     camera.position.set(0, 0, 35);
     controls.update();
@@ -281,9 +253,15 @@ let itsDay = true;
 daynightButton.addEventListener('click', () => {
   if (itsDay) {
     light.intensity = 1;
-     renderer.setClearColor(0x051654, 1) ;
-     scene.add(starField);
-     scene.add(moon);
+    renderer.setClearColor(0x051654, 1) ;
+    scene.add(starField);
+    scene.add(moon);
+    scene.remove(sun);
+    scene.add(bulbLight1);
+    scene.add(bulbLight2);
+    scene.add(bulbLight3);
+    scene.add(bulbLight4);
+    scene.add(bulbLight5);
     daynightButton.textContent = 'Switch to Day';
   } else {
    
@@ -291,17 +269,20 @@ daynightButton.addEventListener('click', () => {
 
     renderer.setClearColor( 0x91daff, 1);
     light.intensity = 5;
+    scene.remove(bulbLight1);
+    scene.remove(bulbLight2);
+    scene.remove(bulbLight3);
+    scene.remove(bulbLight4);
+    scene.remove(bulbLight5);
+    
     scene.remove(moon);
+    
+     scene.add(sun);
     daynightButton.textContent = 'Switch to Night';
   }
   itsDay = !itsDay;
 });
 
-// Add helper to better position the spotlight
-const helper = new THREE.SpotLightHelper(spotLight);
-scene.add(helper);
-
-scene.add(spotLight);
 
 
 const texture = new THREE.TextureLoader().load( "textures/grass-min.png" );
@@ -345,7 +326,6 @@ function animate() {
 
 	requestAnimationFrame( animate );
 
-  helper.update();
 	renderer.render( scene, camera );
 
 }
