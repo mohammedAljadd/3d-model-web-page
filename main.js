@@ -33,7 +33,7 @@ const controls = new OrbitControls( camera, renderer.domElement );
 
 
 // Seeing the house from a good angle
-camera.position.set(-5, -70, 15);
+camera.position.set(0, -13, 10);
 camera.lookAt(0, 0, 0);
 
 controls.update(); //controls.update() must be called after any manual changes to the camera's transform
@@ -45,22 +45,48 @@ const scene = new THREE.Scene();
 const axesHelper = new THREE.AxesHelper(45);
 scene.add(axesHelper);
 
-// To load GLTF files
+// To load GLTF file of house
 const gltfLoader = new GLTFLoader();
+const file = "house_uv.gltf";
 
-const file = "house.gltf";
+// Choose parts to apply texture of brick wall
+const wallParts = ["Waende_OG", "Waende_EG"];
+
+const wallTexture = new THREE.TextureLoader().load(
+  'textures/brick_red.jpg');
+
+wallTexture.wrapS = THREE.RepeatWrapping;
+wallTexture.wrapT = THREE.RepeatWrapping;
+
+wallTexture.rotation = Math.PI / 2; 
+wallTexture.repeat.set(50, 50);
+
+var wallMaterial = new THREE.MeshBasicMaterial( { map: wallTexture } );
 
 gltfLoader.load(file, (gltf) => {
   const root = gltf.scene;
-
-  root.scale.setScalar(0.001);
   
   // Travserse group children (Mesh)
   root.traverse(child => {
-    const material = new THREE.MeshStandardMaterial({color: '#'+(Math.random() * 0xFFFFFF << 0).toString(16).padStart(6, '0')});
-  
+    
+
+    
+
     if(child.isMesh){
+      if(wallParts.includes(child.name)){
+        child.material = wallMaterial;
+      }
+
+      else if(child.name === 'F_Glas'){
+        const material = new THREE.MeshStandardMaterial({color: 0xffffff, transparent: true, opacity: 0.5});
+        child.material = material;
+      }
+      else{
+        const material = new THREE.MeshStandardMaterial({color: '#'+(Math.random() * 0xFFFFFF << 0).toString(16).padStart(6, '0')});
+    
+        console.log(child.name);
       child.material = material;
+      }
     }
   })
 
