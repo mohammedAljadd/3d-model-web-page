@@ -47,7 +47,7 @@ scene.add(axesHelper);
 
 // To load GLTF file of house
 const gltfLoader = new GLTFLoader();
-const file = "house_uv.gltf";
+const file = "house.gltf";
 
 // Choose parts to apply texture of brick wall
 const wallParts = ["Waende_OG", "Waende_EG"];
@@ -74,15 +74,17 @@ var dachMaterial = new THREE.MeshStandardMaterial( { map: dachTexture } );
 
 
 
+let doorPivot = null; // for opening the door
+let house;
+
+
 gltfLoader.load(file, (gltf) => {
-  const root = gltf.scene;
+  house = gltf.scene;
   
   // Travserse group children (Mesh)
-  root.traverse(child => {
-    
+  house.traverse(child => {
 
     
-
     if(child.isMesh){
       if(wallParts.includes(child.name)){
         child.material = wallMaterial;
@@ -110,9 +112,19 @@ gltfLoader.load(file, (gltf) => {
         const material = new THREE.MeshStandardMaterial({color: 0xdbdbdb});
         child.material = material;
       }
+      
 
-      else if (child.name === 'Doors'){
-        const material = new THREE.MeshStandardMaterial({color: 0x403434});
+      else if (child.name.includes('Front_Door')){
+        let color = "fc0303";
+        //color = "0x403434";
+        const material = new THREE.MeshStandardMaterial({color: 0xfc0303});
+        child.material = material;
+      }
+
+      else if (child.name.includes('Door')){
+        let color = "fc0303";
+        //color = "0x403434";
+        const material = new THREE.MeshStandardMaterial({color: 0xfc0303});
         child.material = material;
       }
 
@@ -124,15 +136,61 @@ gltfLoader.load(file, (gltf) => {
       else{
         const material = new THREE.MeshStandardMaterial({color: 0x3b3434});
     
-        console.log(child.name);
+        //console.log(child.name);
       child.material = material;
       }
     }
   })
 
-  scene.add(root);
-  });
+  house.name = 'house';
 
+
+  doorPivotSetup();
+
+  scene.add(house);
+  });
+function doorPivotSetup() {
+  if (!house) return null;
+
+  const door = house.getObjectByName('Front_Door');
+  if (!door) return null;
+
+  // Pivot group
+  doorPivot = new THREE.Group();
+  
+  // To get accurate bounding box
+  door.updateMatrixWorld();
+  
+  // Door's bbox
+  const bbox = new THREE.Box3().setFromObject(door);
+  
+  // Hinge point
+  const hingePosition = new THREE.Vector3(
+    bbox.min.x,
+    bbox.min.y,
+    (bbox.min.z + bbox.max.z) / 2 
+  );
+  
+  // converts hingePositin from world coordinates to the house local coordinates
+  house.worldToLocal(hingePosition);
+  
+  // Setting pivoot position in the house’s local coordinates
+  doorPivot.position.copy(hingePosition);
+  
+  // door original position
+  const doorOriginalPosition = door.position.clone();
+  
+  // temporarily
+  house.remove(door);
+  
+  // Adjustong the door position relativly to pivot
+  door.position.copy(doorOriginalPosition).sub(hingePosition);
+  
+  // Add door to pivot, after that we  pivot to house
+  doorPivot.add(door);
+  house.add(doorPivot);
+  return doorPivot;
+}
 
 
 // Add sky stars
@@ -284,6 +342,32 @@ daynightButton.addEventListener('click', () => {
 });
 
 
+
+
+
+
+
+
+const openFrontDoorButton = document.getElementById('openFrontDoor');
+let isDoorClosed = true;
+openFrontDoorButton.addEventListener('click', () => {
+  if(!doorPivot) {
+    console.warn('Door pivot not initialized yet');
+    return;
+  }
+
+  const angle = Math.PI / 4; // 45 degres
+
+  if (isDoorClosed) {
+    doorPivot.rotation.z = angle;
+    isDoorClosed = false;
+    openFrontDoorButton.textContent = 'Close Front Door';
+  } else {
+    doorPivot.rotation.z = 0;
+    isDoorClosed = true;
+    openFrontDoorButton.textContent = 'Open Front Door';
+  }
+});
 
 const texture = new THREE.TextureLoader().load( "textures/grass-min.png" );
 texture.wrapS = THREE.RepeatWrapping;
