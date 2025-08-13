@@ -33,7 +33,7 @@ const controls = new OrbitControls( camera, renderer.domElement );
 
 
 // Seeing the house from a good angle
-camera.position.set(-10, -25, 20);
+camera.position.set(-5, -70, 15);
 camera.lookAt(0, 0, 0);
 
 controls.update(); //controls.update() must be called after any manual changes to the camera's transform
@@ -69,7 +69,37 @@ gltfLoader.load(file, (gltf) => {
 
 
 
+// Add sky stars
+const MAX_POINTS = 1000;
 
+const bufferGeometry = new THREE.BufferGeometry();
+
+const positions = new Float32Array( MAX_POINTS * 3 );
+bufferGeometry.setAttribute( 'position', new THREE.BufferAttribute( positions, 3 ) );
+
+const drawCount = 1000; 
+bufferGeometry.setDrawRange( 0, drawCount );
+
+
+for ( let i = 0; i < MAX_POINTS; i ++ ) {
+    
+
+    const x = ( Math.random() - 0.5 ) * 2000;
+    const y = ( Math.random() - 0.5 ) * 2000;
+    const z = ( Math.random() ) * 500 + 300;
+    positions[i * 3] = x;
+    positions[i * 3 + 1] = y; 
+    positions[i * 3 + 2] = z;
+
+    
+
+}
+
+// https://threejs.org/docs/#api/en/materials/PointsMaterial
+const pointsMaterial = new THREE.PointsMaterial({ color: 0xfffaba, size: 1.5, sizeAttenuation: false  // to keep stars same size at distance or not
+});
+
+const starField = new THREE.Points(bufferGeometry, pointsMaterial);
 
 // Add light
 const spotLight = new THREE.SpotLight(0xffffff, 250);
@@ -165,9 +195,12 @@ daynightButton.addEventListener('click', () => {
   if (itsDay) {
     light.intensity = 0;
      renderer.setClearColor(0x051654, 1) ;
+     scene.add(starField);
     daynightButton.textContent = 'Switch to Day';
   } else {
    
+    scene.remove(starField);
+
     renderer.setClearColor( 0x91daff, 1);
     light.intensity = 5;
     daynightButton.textContent = 'Switch to Night';
