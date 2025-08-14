@@ -33,6 +33,23 @@ const camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
 const controls = new OrbitControls( camera, renderer.domElement );
 
 
+
+
+
+const listener = new THREE.AudioListener();
+camera.add( listener );
+
+
+const nightSound = new THREE.Audio(listener);
+const audioLoader = new THREE.AudioLoader();
+audioLoader.load('audios/Nights_sound.mp3', function(buffer) {
+    nightSound.setBuffer(buffer);
+    nightSound.setLoop(true);
+    nightSound.setVolume(0.5);
+});
+
+
+
 // Seeing the house from a good angle
 camera.position.set(0, -35, 10);
 camera.lookAt(0, 0, 0);
@@ -100,6 +117,7 @@ var doorMaterial = new THREE.MeshStandardMaterial( { map: doorTexture } );
 const doorPivots = {};
 
 let house;
+
 
 
 gltfLoader.load(file, (gltf) => {
@@ -171,6 +189,8 @@ gltfLoader.load(file, (gltf) => {
       }
     }
   })
+  
+  
 
   house.name = 'house';
 
@@ -443,6 +463,8 @@ document.getElementById('walkthorw').addEventListener('click', () => {
         const button = document.getElementById(step.action);
         if (button) button.click();
         else if(step.action==='open_Top_Inner_Door_Left'){
+    
+    
           const doorPivot = doorPivots["Top_Inner_Door_Left"];
  
           doorPivot.rotation.z = -angle;
@@ -450,6 +472,7 @@ document.getElementById('walkthorw').addEventListener('click', () => {
         }
 
         else if(step.action==='close_Top_Inner_Door_Left'){
+    
           const doorPivot = doorPivots["Top_Inner_Door_Left"];
  
           doorPivot.rotation.z = angle;
@@ -481,7 +504,7 @@ daynightButton.addEventListener('click', () => {
     scene.add(bulbLight8);
     scene.add(bulbLight9);
     scene.add(bulbLight10);
-    
+    nightSound.play();
     
     daynightButton.textContent = 'Switch to Day';
   } else {
@@ -502,7 +525,7 @@ daynightButton.addEventListener('click', () => {
     scene.remove(bulbLight10);
     
     scene.remove(moon);
-    
+    nightSound.pause();
      scene.add(sun);
     daynightButton.textContent = 'Switch to Night';
   }
@@ -524,6 +547,7 @@ const doorPivot = doorPivots["Front_Door"];
 
 
   if (isDoorClosed) {
+    
     doorPivot.rotation.z = angle;
     isDoorClosed = false;
     openFrontDoorButton.textContent = 'Close Front Door';
@@ -545,6 +569,7 @@ const doorPivot = doorPivots["Back_Door"];
 
 
   if (isBackDoorClosed) {
+    
     doorPivot.rotation.z = angle;
     isBackDoorClosed = false;
     openBackDoorButton.textContent = 'Close Back Door';
@@ -568,6 +593,7 @@ openInnerDoorButton.addEventListener('click', () => {
   }
 
   if (isInnerDoorClosed) {
+    
     doorPivot.rotation.z = angle;
     isInnerDoorClosed = false;
     openInnerDoorButton.textContent = 'Close Inner Door';
