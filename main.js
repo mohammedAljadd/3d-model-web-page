@@ -223,7 +223,7 @@ for ( let i = 0; i < rains_points; i ++ ) {
     rainPositions[i * 6 + 1 + 3] = y; 
     rainPositions[i * 6 + 2 + 3] = z - 2.5; // lengh of line
 }
-const rainMaterial = new THREE.LineBasicMaterial({ color: 0x96dafa, transparent: true, opacity: 0.65
+const rainMaterial = new THREE.LineBasicMaterial({ color: 0x96dafa, transparent: true, opacity: 0.75
 });
 
 const rain = new THREE.LineSegments(rainrGeometry, rainMaterial);
