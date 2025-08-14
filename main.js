@@ -373,6 +373,11 @@ document.getElementById('walkthorw').addEventListener('click', () => {
 const daynightButton = document.getElementById('toggleDayNight');
 let itsDay = true;
 daynightButton.addEventListener('click', () => {
+
+  if(dayEveningButton.textContent === 'Switch to Day'){
+    dayEveningButton.click();
+  }
+
   if (itsDay) {
     light.intensity = 1;
     renderer.setClearColor(0x051654, 1) ;
@@ -396,6 +401,33 @@ daynightButton.addEventListener('click', () => {
   itsDay = !itsDay;
 });
 
+
+
+// --- Evening view
+const dayEveningButton = document.getElementById('toggleDayEvening');
+let isDay = true;
+dayEveningButton.addEventListener('click', () => {
+
+  if(daynightButton.textContent === 'Switch to Day'){
+    daynightButton.click();
+  }
+
+  if (isDay) {
+    light.intensity = 3;
+    renderer.setClearColor(0x2f51cc, 1) ;
+    dayEveningButton.textContent = 'Switch to Day';
+    sun.position.z -= 500;
+    sun.material.color.set(0xbf8d04);
+  } 
+  else {
+    renderer.setClearColor( 0x91daff, 1);
+    light.intensity = 5;
+    sun.position.z += 500;
+    dayEveningButton.textContent = 'Switch to Evening';
+    sun.material.color.set(0xf0e80c);
+  }
+  isDay = !isDay;
+});
 
 
 // --- Toggle Open door Controll
