@@ -35,7 +35,6 @@ const controls = new OrbitControls( camera, renderer.domElement );
 // Seeing the house from a good angle
 camera.position.set(0, -35, 10);
 camera.lookAt(0, 0, 0);
-
 controls.update(); //controls.update() must be called after any manual changes to the camera's transform
 
 // Our scene
@@ -47,8 +46,14 @@ scene.add(axesHelper);
 
 // To load GLTF file of house
 const gltfLoader = new GLTFLoader();
-const file = "4_door_uv.gltf";
+const file = "5_all_doors_sep.gltf";
 
+
+// Doors are named like this :
+
+// First floor : Front_Door, Inner_Door, Back_Door, Side_Door
+// Second floor : Top_Left_Door, Top_Inner_Door_Left, Top_Inner_Door_Right, Top_Right_Door
+const angle = Math.PI / 2.5;
 // Choose parts to apply texture of brick wall
 const wallParts = ["Waende_OG", "Waende_EG"];
 
@@ -89,8 +94,10 @@ var doorMaterial = new THREE.MeshStandardMaterial( { map: doorTexture } );
 
 
  
-let doorPivot = null; // for opening the door
-let backDoorPivot = null; // for opening the door
+
+// Store all door pivots in an object
+const doorPivots = {};
+
 let house;
 
 
@@ -101,11 +108,17 @@ gltfLoader.load(file, (gltf) => {
   house.traverse(child => {
 
     
+    
     if(child.isMesh){
+      child.visible = true;
+
       if(wallParts.includes(child.name)){
         child.material = wallMaterial;
+        child.visible = true;
          
       }
+
+      
 
       else if(child.name === 'F_Glas'){
         const material = new THREE.MeshStandardMaterial({color: 0xffffff, transparent: true, opacity: 0.5});
@@ -128,11 +141,13 @@ gltfLoader.load(file, (gltf) => {
       else if (child.name === 'mauer'){
         const material = new THREE.MeshStandardMaterial({color: 0xdbdbdb});
         child.material = material;
+        child.visible = true;
       }
       
 
       else if (child.name.includes('Door')){
         child.material = doorMaterial;
+        child.visible = true;
       }
 
 
@@ -144,7 +159,9 @@ gltfLoader.load(file, (gltf) => {
 
       else{
         const material = new THREE.MeshStandardMaterial({color: 0x3b3434});
-    
+        if(child.name==="Treppe"){
+          child.visible = true;
+        }
         //console.log(child.name);
       child.material = material;
       }
@@ -154,29 +171,30 @@ gltfLoader.load(file, (gltf) => {
   house.name = 'house';
 
 
-  doorPivotSetup();
+  doorPivotSetup('Front_Door');
+  doorPivotSetup('Back_Door');
+  doorPivotSetup('Inner_Door');
+  doorPivotSetup('Top_Inner_Door_Left');
+  
+  
 
   scene.add(house);
   });
-function doorPivotSetup() {
+function doorPivotSetup(doorName) {
   if (!house) return null;
 
-  const door = house.getObjectByName('Front_Door');
-  const backDoor = house.getObjectByName('Back_Door');
+  const door = house.getObjectByName(doorName);
   
   if (!door) return null;
 
   // Pivot group
-  doorPivot = new THREE.Group();
-  backDoorPivot = new THREE.Group();
+  const doorPivot = new THREE.Group();
   
   // To get accurate bounding box
   door.updateMatrixWorld();
-  backDoor.updateMatrixWorld();
 
   // Door's bbox
   const bbox = new THREE.Box3().setFromObject(door);
-  const backbbox = new THREE.Box3().setFromObject(backDoor);
   
   // Hinge point
   const hingePosition = new THREE.Vector3(
@@ -185,43 +203,32 @@ function doorPivotSetup() {
     (bbox.min.z + bbox.max.z) / 2 
   );
 
-  const backhingePosition = new THREE.Vector3(
-    backbbox.min.x,
-    backbbox.min.y,
-    (backbbox.min.z + backbbox.max.z) / 2 
-  );
+
   
   // converts hingePositin from world coordinates to the house local coordinates
   house.worldToLocal(hingePosition);
-  house.worldToLocal(backhingePosition);
   
   
   // Setting pivoot position in the house’s local coordinates
   doorPivot.position.copy(hingePosition);
-  backDoorPivot.position.copy(backhingePosition);
   
   
   // door original position
   const doorOriginalPosition = door.position.clone();
-  const backdoorOriginalPosition = door.position.clone();
   
   // temporarily
   house.remove(door);
-  house.remove(backDoor);
   
   
   // Adjustong the door position relativly to pivot
   door.position.copy(doorOriginalPosition).sub(hingePosition);
-  backDoor.position.copy(backdoorOriginalPosition).sub(backhingePosition);
   
   
   // Add door to pivot, after that we  pivot to house
   doorPivot.add(door);
   house.add(doorPivot);
 
-  backDoorPivot.add(backDoor);
-  house.add(backDoorPivot);
-
+  doorPivots[doorName] = doorPivot;
   
   return doorPivot;
 }
@@ -333,19 +340,19 @@ document.getElementById('topView').addEventListener('click', () => {
 });
 
 document.getElementById('frontView').addEventListener('click', () => {
-    camera.position.set(0, -35, 5);
+    camera.position.set(0, -20, 5);
     controls.update();
 });
 
 
 document.getElementById('backView').addEventListener('click', () => {
-    camera.position.set(0, 35, 5);
-    camera.up.set(0, 0, 1);
-    camera.lookAt(0, 0, 0);
-    controls.target.set(0, 0, 0);
+    camera.position.set(0, 20, 5);
+    camera.up.set(0, 0, 1); // camera got flipped
     controls.update();
 
 });
+
+
 
 
 
@@ -357,6 +364,70 @@ animateButton.addEventListener('click', () => {
   isAnimating = !isAnimating;
   animateButton.textContent = isAnimating ? 'Stop Animation' : 'Animate';
 });
+
+
+
+const walkthroughSteps = [
+  { position: new THREE.Vector3(3.5, -7, 2), target: new THREE.Vector3(3.5, 7, 2), action: 'openFrontDoor' },
+  { position: new THREE.Vector3(3.5, -2.4, 2), target: new THREE.Vector3(3.5, 5, 2), action: 'openInnerDoor' },
+  { position: new THREE.Vector3(3.5, 0, 2), target: new THREE.Vector3(-2, 2, 2), action: 'openInnerDoor' },
+  { position: new THREE.Vector3(1, 0, 2), target: new THREE.Vector3(1, 5, 3), action: 'Look up stairs' },
+  { position: new THREE.Vector3(1, 5, 3), target: new THREE.Vector3(-1, -5, 4), action: 'Claim up first stairs' },
+  { position: new THREE.Vector3(0, 5, 3), target: new THREE.Vector3(0, -5, 4), action: 'Look up second stairs' },
+  { position: new THREE.Vector3(0, 2, 5), target: new THREE.Vector3(2, -2, 5), action: 'Claim up second stairs' },
+  { position: new THREE.Vector3(0, 2, 5), target: new THREE.Vector3(2, -2, 5), action: 'open_Top_Inner_Door_Left' },
+  { position: new THREE.Vector3(1, 0, 5), target: new THREE.Vector3(1, -10, 5), action: 'Get close to Top Room' },
+  { position: new THREE.Vector3(1, 0, 5), target: new THREE.Vector3(1, -10, 5), action: 'close_Top_Inner_Door_Left' },
+  { position: new THREE.Vector3(1, -1, 5), target: new THREE.Vector3(-2.5, -10, 5), action: 'inspect top room' },
+  { position: new THREE.Vector3(1, -1, 5), target: new THREE.Vector3(1, 10, 5), action: 'open_Top_Inner_Door_Left' },
+  { position: new THREE.Vector3(0, 5, 3), target: new THREE.Vector3(2, -5, 3), action: 'claim down second stairs' },
+  { position: new THREE.Vector3(1, 0, 2), target: new THREE.Vector3(2, 5, 2), action: 'claim down first stairs' },
+  { position: new THREE.Vector3(3, 0, 2), target: new THREE.Vector3(3, 5, 2), action: 'Look at back door' },
+  { position: new THREE.Vector3(3, 0, 2), target: new THREE.Vector3(3, 5, 2), action: 'openBackDoor' },
+  { position: new THREE.Vector3(3, 5, 2), target: new THREE.Vector3(3, 10, 2), action: 'Go out from Back' },
+  
+  
+];
+
+let currentStep = 0;
+
+document.getElementById('walkthorw').addEventListener('click', () => {
+
+    
+
+    const step = walkthroughSteps[currentStep];
+    console.log(currentStep, " ", step.action);
+    // Move camera
+    camera.position.copy(step.position);
+    controls.target.copy(step.target);
+    camera.up.set(0, 0, 1); 
+    controls.update();
+
+    if (step.action) {
+        const button = document.getElementById(step.action);
+        if (button) button.click();
+        else if(step.action==='open_Top_Inner_Door_Left'){
+          const doorPivot = doorPivots["Top_Inner_Door_Left"];
+ 
+          doorPivot.rotation.z = -angle;
+ 
+          console.log("iner");
+        }
+
+        else if(step.action==='close_Top_Inner_Door_Left'){
+          const doorPivot = doorPivots["Top_Inner_Door_Left"];
+ 
+          doorPivot.rotation.z = angle;
+ 
+          console.log("iner");
+        }
+    }
+
+    currentStep = (currentStep + 1) % walkthroughSteps.length;
+});
+
+
+
 
 const daynightButton = document.getElementById('toggleDayNight');
 let itsDay = true;
@@ -403,12 +474,12 @@ daynightButton.addEventListener('click', () => {
 const openFrontDoorButton = document.getElementById('openFrontDoor');
 let isDoorClosed = true;
 openFrontDoorButton.addEventListener('click', () => {
+const doorPivot = doorPivots["Front_Door"];
   if(!doorPivot) {
     console.warn('Door pivot not initialized yet');
     return;
   }
 
-  const angle = Math.PI / 4; // 45 degres
 
   if (isDoorClosed) {
     doorPivot.rotation.z = angle;
@@ -421,26 +492,47 @@ openFrontDoorButton.addEventListener('click', () => {
   }
 });
 
-
-
 const openBackDoorButton = document.getElementById('openBackDoor');
 let isBackDoorClosed = true;
 openBackDoorButton.addEventListener('click', () => {
-  if(!backDoorPivot) {
+const doorPivot = doorPivots["Back_Door"];
+  if(!doorPivot) {
     console.warn('Door pivot not initialized yet');
     return;
   }
 
-  const angle = Math.PI / 4; // 45 degres
 
   if (isBackDoorClosed) {
-    backDoorPivot.rotation.z = -angle;
+    doorPivot.rotation.z = angle;
     isBackDoorClosed = false;
     openBackDoorButton.textContent = 'Close Back Door';
   } else {
-    backDoorPivot.rotation.z = 0;
+    doorPivot.rotation.z = 0;
     isBackDoorClosed = true;
     openBackDoorButton.textContent = 'Open Back Door';
+  }
+});
+
+
+
+const openInnerDoorButton = document.getElementById('openInnerDoor');
+let isInnerDoorClosed = true;
+
+openInnerDoorButton.addEventListener('click', () => {
+  const doorPivot = doorPivots["Inner_Door"];
+  if(!doorPivot) {
+    console.warn('Door pivot not initialized yet');
+    return;
+  }
+
+  if (isInnerDoorClosed) {
+    doorPivot.rotation.z = angle;
+    isInnerDoorClosed = false;
+    openInnerDoorButton.textContent = 'Close Inner Door';
+  } else {
+    doorPivot.rotation.z = 0;
+    isInnerDoorClosed = true;
+    openInnerDoorButton.textContent = 'Open Inner Door';
   }
 });
 
