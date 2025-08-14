@@ -57,6 +57,14 @@ audioLoader.load('audios/rain_sound.mp3', function(buffer) {
 });
 
 
+const thunderSound = new THREE.Audio(listener);
+audioLoader.load('audios/thunder_sound.mp3', function(buffer) {
+    thunderSound.setBuffer(buffer);
+    thunderSound.setLoop(false);
+    thunderSound.setVolume(0.5);
+});
+
+
 
 // Seeing the house from a good angle
 camera.position.set(0, -35, 10);
@@ -333,6 +341,36 @@ const rainMaterial = new THREE.LineBasicMaterial({ color: 0x96dafa, transparent:
 });
 
 const rain = new THREE.LineSegments(rainrGeometry, rainMaterial);
+
+
+
+// Thunderstormes : connected white lines
+const thunderPoints = 20;
+
+const thunderMaterial = new THREE.LineBasicMaterial( { color: 0xd7effa } );
+
+const thunderGeometry = new THREE.BufferGeometry();
+
+const thnderpositions = new Float32Array( thunderPoints * 3 ); 
+
+thunderGeometry.setAttribute( 'position', new THREE.BufferAttribute( thnderpositions, 3 ) );
+
+thunderGeometry.setDrawRange( 0, thunderPoints );
+
+
+// line
+const thunderLine = new THREE.Line( thunderGeometry, thunderMaterial );
+scene.add( thunderLine );
+
+
+const positionAttribute = thunderLine.geometry.getAttribute( 'position' );
+
+
+
+thunderLine.geometry.setDrawRange( 0, 0 );
+
+
+
 
 
 // Adding the moon for night view
@@ -681,6 +719,27 @@ rainItButton.addEventListener('click', () => {
 
 
 
+let showThunderstormes = false;
+const thunderButton = document.getElementById('startThunderstorm');
+
+thunderButton.addEventListener('click', () => {
+  showThunderstormes = true;
+let x = 0, y = 1000, z = 700;
+
+for ( let i = 0; i < positionAttribute.count; i ++ ) {
+    
+    positionAttribute.setXYZ( i, x, y, z );
+
+    x += ( Math.random() - 0.5 ) * 100;
+    y += ( Math.random() - 0.5 ) * 30;
+    z += -( Math.random() ) * 100;
+
+}
+thunderSound.play();
+positionAttribute.needsUpdate = true;
+
+});
+
 
 
 // Responsive canvas
@@ -707,40 +766,49 @@ window.addEventListener( 'resize', resize );
 
 
 
+let thunderCounter = 0;
+let currentThunderPoints = 0;
+let nFrames = 3; // show a thunder line each nFrames
+let thunderDuration = 5;
+
 function animate() {
+    requestAnimationFrame(animate);
 
-	requestAnimationFrame( animate );
-
-   if (isAnimating && house) {
+    if (isAnimating && house) {
         house.rotation.z += 0.01; 
     }
 
-  if(isRaining){
-    const positions = rain.geometry.attributes.position.array;
-    for (let i = 0; i < rains_points; i++) {
-
-      // Reduce z for first point
-      positions[i * 6 + 2] -= 0.6;
-
-      // Reduce z for second point
-      positions[i * 6 + 5] -= 0.6;
-      
-      // If rain hit ground, rest their positions
-      if (positions[i * 6 + 5] <= 0) {
-          positions[i * 6 + 2] = Math.random() * 50 + 20;
-          positions[i * 6 + 5] = positions[i * 6 + 2] - 2.5;
-      }
+    thunderCounter += 1;
+    console.log(thunderCounter);
+    if (thunderCounter >= nFrames && currentThunderPoints < thunderPoints + thunderDuration && showThunderstormes) {
+        currentThunderPoints++;
+        thunderLine.geometry.setDrawRange(0, currentThunderPoints);
+        thunderCounter = 0; // Reset counter
+    }
+    else if(currentThunderPoints>=thunderPoints){
+      currentThunderPoints = 0;
+      showThunderstormes = false;
+      thunderLine.geometry.setDrawRange(0, 0);
     }
 
-    rain.geometry.attributes.position.needsUpdate = true; // https://sbcode.net/threejs/geometry-to-buffergeometry/
-    // docs : Flag to indicate that this attribute has changed and should be re-sent to the GPU. Set this to true when you modify the value of the array.
 
-  }
-	renderer.render( scene, camera );
+    
 
+    if (isRaining) {
+        const positions = rain.geometry.attributes.position.array;
+        for (let i = 0; i < rains_points; i++) {
+            positions[i * 6 + 2] -= 0.6;
+            positions[i * 6 + 5] -= 0.6;
+            
+            if (positions[i * 6 + 5] <= 0) {
+                positions[i * 6 + 2] = Math.random() * 50 + 20;
+                positions[i * 6 + 5] = positions[i * 6 + 2] - 2.5;
+            }
+        }
+        rain.geometry.attributes.position.needsUpdate = true;
+    }
+
+    renderer.render(scene, camera);
 }
 
 animate();
-
-
-
