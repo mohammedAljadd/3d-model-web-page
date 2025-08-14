@@ -12,7 +12,7 @@ import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
 const canvas = document.querySelector('#c');
 const renderer = new THREE.WebGLRenderer({antialias: true, canvas});
 renderer.shadowMap.enabled = true;
-renderer.setClearColor( 0x91daff, 1);
+renderer.setClearColor( 0x1aa4eb, 1);
 
 // Better resolution
 renderer.setSize( window.innerWidth, window.innerHeight );
@@ -46,6 +46,14 @@ audioLoader.load('audios/Nights_sound.mp3', function(buffer) {
     nightSound.setBuffer(buffer);
     nightSound.setLoop(true);
     nightSound.setVolume(0.5);
+});
+
+
+const rainSound = new THREE.Audio(listener);
+audioLoader.load('audios/rain_sound.mp3', function(buffer) {
+    rainSound.setBuffer(buffer);
+    rainSound.setLoop(true);
+    rainSound.setVolume(0.5);
 });
 
 
@@ -289,6 +297,42 @@ const pointsMaterial = new THREE.PointsMaterial({ color: 0xfffaba, size: 1.5, si
 });
 
 const starField = new THREE.Points(bufferGeometry, pointsMaterial);
+
+
+
+
+// Add rains
+const rains_points = 1000;
+
+const rainrGeometry = new THREE.BufferGeometry();
+
+const rainPositions = new Float32Array( MAX_POINTS * 3 * 2); // each line has two points
+rainrGeometry.setAttribute( 'position', new THREE.BufferAttribute( rainPositions, 3 ) );
+
+
+for ( let i = 0; i < rains_points; i ++ ) {
+    
+
+    const x = ( Math.random() - 0.5 ) * 200;
+    const y = ( Math.random() - 0.5 ) * 200;
+    const z = ( Math.random() ) * 50 + 30;
+
+    // Point above
+    rainPositions[i * 6] = x;
+    rainPositions[i * 6 + 1] = y; 
+    rainPositions[i * 6 + 2] = z;
+
+    // Point bellow
+    rainPositions[i * 6 + 3] = x; 
+    rainPositions[i * 6 + 1 + 3] = y; 
+    rainPositions[i * 6 + 2 + 3] = z - 2.5; // lengh of line
+}
+
+
+const rainMaterial = new THREE.LineBasicMaterial({ color: 0x96dafa, transparent: true, opacity: 0.65
+});
+
+const rain = new THREE.LineSegments(rainrGeometry, rainMaterial);
 
 
 // Adding the moon for night view
@@ -616,6 +660,26 @@ const plane = new THREE.Mesh( geometry, material );
 
 scene.add( plane );
 
+const rainItButton = document.getElementById('rainIt');
+let isRaining = false;
+rainItButton.addEventListener('click', () => {
+  
+
+
+  if (isRaining) {
+    isRaining = false;
+    scene.remove(rain);
+    rainSound.pause();
+    rainItButton.textContent = 'Start Rain';
+  } else {
+    isRaining = true;
+    scene.add(rain);
+    rainSound.play();
+    rainItButton.textContent = 'Stop Rain';
+  }
+});
+
+
 
 
 
@@ -641,6 +705,8 @@ function resize() {
 
 window.addEventListener( 'resize', resize );
 
+
+
 function animate() {
 
 	requestAnimationFrame( animate );
@@ -649,6 +715,27 @@ function animate() {
         house.rotation.z += 0.01; 
     }
 
+  if(isRaining){
+    const positions = rain.geometry.attributes.position.array;
+    for (let i = 0; i < rains_points; i++) {
+
+      // Reduce z for first point
+      positions[i * 6 + 2] -= 0.6;
+
+      // Reduce z for second point
+      positions[i * 6 + 5] -= 0.6;
+      
+      // If rain hit ground, rest their positions
+      if (positions[i * 6 + 5] <= 0) {
+          positions[i * 6 + 2] = Math.random() * 50 + 20;
+          positions[i * 6 + 5] = positions[i * 6 + 2] - 2.5;
+      }
+    }
+
+    rain.geometry.attributes.position.needsUpdate = true; // https://sbcode.net/threejs/geometry-to-buffergeometry/
+    // docs : Flag to indicate that this attribute has changed and should be re-sent to the GPU. Set this to true when you modify the value of the array.
+
+  }
 	renderer.render( scene, camera );
 
 }
