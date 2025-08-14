@@ -11,6 +11,7 @@ import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
 // Renderer
 const canvas = document.querySelector('#c');
 const renderer = new THREE.WebGLRenderer({antialias: true, canvas});
+renderer.shadowMap.enabled = true;
 renderer.setClearColor( 0x91daff, 1);
 
 // Better resolution
@@ -112,6 +113,10 @@ gltfLoader.load(file, (gltf) => {
     if(child.isMesh){
       child.visible = true;
 
+      // To revent light from goign thow objects : https://threejs-journey.com/lessons/shadows#how-to-activate-shadows
+      child.castShadow = true;
+      child.receiveShadow = true;
+
       if(wallParts.includes(child.name)){
         child.material = wallMaterial;
         child.visible = true;
@@ -162,7 +167,6 @@ gltfLoader.load(file, (gltf) => {
         if(child.name==="Treppe"){
           child.visible = true;
         }
-        //console.log(child.name);
       child.material = material;
       }
     }
@@ -306,30 +310,61 @@ scene.add(light);
 
 
 // Add bulb lights
-const bulbLight1 = new THREE.PointLight(0xf7f181, 1, 5);
+// Need to activate shadow to prevent light from goign thorw objects : https://threejs-journey.com/lessons/shadows#how-to-activate-shadows
+const bulbLight1 = new THREE.PointLight(0xf7f181, 1, 3); // top right
 bulbLight1.intensity = 50;
-bulbLight1.position.set(5, -2, 7);
+bulbLight1.position.set(4.5, -2, 5.5);
+bulbLight1.castShadow = true;
 
-const bulbLight2 = new THREE.PointLight(0xf7f181, 1, 5);
+
+const bulbLight2 = new THREE.PointLight(0xf7f181, 1, 5); // top left
 bulbLight2.intensity = 50;
-bulbLight2.position.set(-1, -2, 7);
+bulbLight2.position.set(-0.7, -2, 6);
+bulbLight2.castShadow = true;
 
-const bulbLight3 = new THREE.PointLight(0xf7f181, 1, 10);
-bulbLight3.intensity = 50;
-bulbLight3.position.set(3, -2, 3);
+const bulbLight3 = new THREE.PointLight(0xf7f181, 1, 10); // Porch light
+bulbLight3.intensity = 25;
+bulbLight3.position.set(3, -5, 3);
+bulbLight3.castShadow = true;
 
 
-
-const bulbLight4 = new THREE.PointLight(0xf7f181, 1, 10);
+const bulbLight4 = new THREE.PointLight(0xf7f181, 1, 10); // left bottom room
 bulbLight4.intensity = 50;
-bulbLight4.position.set(-2, -2, 3);
+bulbLight4.position.set(-5.5, -4.5, 3);
+bulbLight4.castShadow = true;
 
-
-const bulbLight5 = new THREE.PointLight(0xf7f181, 1, 10);
+const bulbLight5 = new THREE.PointLight(0xf7f181, 1, 10); // left bottom back room
 bulbLight5.intensity = 50;
-bulbLight5.position.set(-4, -2, 3);
+bulbLight5.position.set(-5.5, 1, 3);
+bulbLight5.castShadow = true;
+
+const bulbLight6 = new THREE.PointLight(0xf7f181, 1, 10);
+bulbLight6.intensity = 50;
+bulbLight6.position.set(-2, -2.8, 2);
+bulbLight6.castShadow = true;
 
 
+const bulbLight7 = new THREE.PointLight(0xf7f181, 1, 10); // left bottom back room
+bulbLight7.intensity = 50;
+bulbLight7.position.set(1, 0, 2);
+bulbLight7.castShadow = true;
+
+
+const bulbLight8 = new THREE.PointLight(0xf7f181, 1, 20); // look at second sttairs
+bulbLight8.intensity = 50;
+bulbLight8.position.set(0, 0, 8);
+bulbLight8.castShadow = true;
+
+
+const bulbLight9 = new THREE.PointLight(0xf7f181, 1, 10); // left bottom back room
+bulbLight9.intensity = 30;
+bulbLight9.position.set(3, 2, 2);
+bulbLight9.castShadow = true;
+
+const bulbLight10 = new THREE.PointLight(0xf7f181, 1, 10); // near inner door
+bulbLight10.intensity = 30;
+bulbLight10.position.set(3.5, -2, 2);
+bulbLight10.castShadow = true;
 
 
 
@@ -338,6 +373,7 @@ document.getElementById('topView').addEventListener('click', () => {
     camera.position.set(0, 0, 35);
     controls.update();
 });
+
 
 document.getElementById('frontView').addEventListener('click', () => {
     camera.position.set(0, -20, 5);
@@ -396,7 +432,7 @@ document.getElementById('walkthorw').addEventListener('click', () => {
     
 
     const step = walkthroughSteps[currentStep];
-    console.log(currentStep, " ", step.action);
+    
     // Move camera
     camera.position.copy(step.position);
     controls.target.copy(step.target);
@@ -411,7 +447,6 @@ document.getElementById('walkthorw').addEventListener('click', () => {
  
           doorPivot.rotation.z = -angle;
  
-          console.log("iner");
         }
 
         else if(step.action==='close_Top_Inner_Door_Left'){
@@ -419,13 +454,11 @@ document.getElementById('walkthorw').addEventListener('click', () => {
  
           doorPivot.rotation.z = angle;
  
-          console.log("iner");
         }
     }
 
     currentStep = (currentStep + 1) % walkthroughSteps.length;
 });
-
 
 
 
@@ -443,6 +476,13 @@ daynightButton.addEventListener('click', () => {
     scene.add(bulbLight3);
     scene.add(bulbLight4);
     scene.add(bulbLight5);
+    scene.add(bulbLight6);
+    scene.add(bulbLight7);
+    scene.add(bulbLight8);
+    scene.add(bulbLight9);
+    scene.add(bulbLight10);
+    
+    
     daynightButton.textContent = 'Switch to Day';
   } else {
    
@@ -455,6 +495,11 @@ daynightButton.addEventListener('click', () => {
     scene.remove(bulbLight3);
     scene.remove(bulbLight4);
     scene.remove(bulbLight5);
+    scene.remove(bulbLight6);
+    scene.remove(bulbLight7);
+    scene.remove(bulbLight8);
+    scene.remove(bulbLight9);
+    scene.remove(bulbLight10);
     
     scene.remove(moon);
     
@@ -463,9 +508,6 @@ daynightButton.addEventListener('click', () => {
   }
   itsDay = !itsDay;
 });
-
-
-
 
 
 
