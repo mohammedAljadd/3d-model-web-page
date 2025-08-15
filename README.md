@@ -15,13 +15,15 @@
 - **3D house model** : Includes two floors with rooms, walls, stairs, and glass windows
 - **Realistic textures** : Brick walls, roof tiles, wooden doors, and grass terrain
 - **Door controllers** : Open and close multiple doors `independently`
+- **Lamp Posts** : Decorative street-style lamp posts for outdoor lighting at night (*added via Three.js*)
 
 
-### 🎥 Dynamic Camera System
+### 🎥 Dynamic Smooth Camera System
 
 - **View Modes** : Switch between Front, Top, and Back views
 - **Orbit Controls** : Camera movement with mouse controls
 - **Guided House Tour** : Automated walkthrough from the front door to the back of the house
+- **Smooth Camera Movement**: Seamlessly transition between different camera positions
 
 ### 🌤️ Weather & Lighting Effects
 
@@ -38,9 +40,14 @@
 - **Rain**: rainfall sound
 - **Thunderstorm**: Thunder sound effects
 
+### 📊 Performance Monitoring
+
+- **FPS Counter**: Displays real-time frames per second to monitor performance
+
+
 ## 🛠️ Technologies Used
 
-- **Three.js (r128)**: Primary framework used for rendering the 3D house model
+- **Three.js (r179)**: Primary framework used for rendering the 3D house model
 - **Bootstrap 5**: For styling of the interface
 
 
