@@ -1,8 +1,12 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
-import {loadAudio, prepareTextureMaterial, doorPivotSetup, createSphere, toggleOpenDoor} from './utils.js';
+import {loadAudio, prepareTextureMaterial, doorPivotSetup, createSphere, toggleOpenDoor, createLampost} from './utils.js';
+import Stats from 'stats.js'
 
+const stats = new Stats()
+stats.showPanel(0) // 0: fps, 1: ms, 2: mb, 3+: custom
+document.body.appendChild(stats.dom)
 
 // ------------------------------------------------- Base config for Three.js -----------------------------------------------------------
 // Renderer
@@ -228,8 +232,9 @@ const rainMaterial = new THREE.LineBasicMaterial({ color: 0x96dafa, transparent:
 
 const rain = new THREE.LineSegments(rainrGeometry, rainMaterial);
 
-
-// ---------------------------------------------------- Thunderstormes ----------------------------------------------------
+const axesHelper = new THREE.AxesHelper( 50 );
+scene.add( axesHelper );
+// ---------------------------------------------------- Night objects : sun, bulblight.... ----------------------------------------------------
 // Thunderstormes : connected white lines
 const thunderPoints = 20;
 const thunderMaterial = new THREE.LineBasicMaterial( { color: 0xd7effa } );
@@ -262,26 +267,70 @@ scene.add(light);
 // Need to activate shadow to prevent light from goign thorw objects : https://threejs-journey.com/lessons/shadows#how-to-activate-shadows
 const bulbColor = 0xf7f181;
 const bulbConfigs = [
-  { intensity: 50, distance: 3, position: [4.5, -2, 5.5] }, // top right
-  { intensity: 50, distance: 5, position: [-0.7, -2, 6] }, // top left
-  { intensity: 25, distance: 10, position: [3, -5, 3] }, // Porch light
-  { intensity: 50, distance: 10, position: [-5.5, -4.5, 3] }, // left bottom room
-  { intensity: 50, distance: 10, position: [-5.5, 1, 3] }, // left bottom back room
-  { intensity: 50, distance: 10, position: [-2, -2.8, 2] },
-  { intensity: 50, distance: 10, position: [1, 0, 2] }, // left bottom back room
-  { intensity: 50, distance: 20, position: [0, 0, 8] }, // look at second stairs
-  { intensity: 30, distance: 10, position: [3, 2, 2] }, // left bottom back room
-  { intensity: 30, distance: 10, position: [3.5, -2, 2] }, // near inner door
+  { intensity: 50, distance: 3, position: [4.5, -2, 5.5], toCastShadow : false }, // top right
+  { intensity: 50, distance: 5, position: [-0.7, -2, 6], toCastShadow : false }, // top left
+  { intensity: 25, distance: 10, position: [3, -5, 3], toCastShadow : false }, // Porch light
+  { intensity: 50, distance: 10, position: [-5.5, -4.5, 3], toCastShadow : false }, // left bottom room
+  { intensity: 50, distance: 10, position: [-5.5, 1, 3], toCastShadow : false }, // left bottom back room
+  { intensity: 50, distance: 10, position: [-2, -2.8, 2], toCastShadow : false }, // sd
+  { intensity: 50, distance: 10, position: [1, 0, 2], toCastShadow : false }, // left bottom back room
+  { intensity: 50, distance: 20, position: [0, 0, 8], toCastShadow : false }, // look at second stairs
+  { intensity: 30, distance: 10, position: [3, 2, 2], toCastShadow : false }, // left bottom back room
+  { intensity: 30, distance: 10, position: [3.5, -2, 2], toCastShadow : false }, // near inner door
 ];
 
 const bulbLights = bulbConfigs.map(config => {
   const light = new THREE.PointLight(bulbColor, 1, config.distance);
   light.intensity = config.intensity;
   light.position.set(...config.position);
-  light.castShadow = true;
+  light.castShadow = config.toCastShadow;
+
   return light;
 });
 
+
+
+// --- Lamposts
+
+const lampHight = 20;
+
+const lampPost1 = createLampost(-11.8, -12.0, lampHight);
+const lampPost2 = createLampost(11.5, -11.6, lampHight);
+const lampPost3 = createLampost(11.5, 11.8, lampHight);
+const lampPost4 = createLampost(-12.1, 12.0, lampHight);
+scene.add(lampPost1);
+scene.add(lampPost2);
+scene.add(lampPost3);
+scene.add(lampPost4);
+
+// Lights on top of each lamp post
+
+const lampColor = 0xf7f181;
+const lampConfigs = [
+  { intensity: 200, distance: lampHight+10, position: [-11.8, -12.0, lampHight]},
+  { intensity: 200, distance: lampHight+10, position: [11.5, -11.6, lampHight]},
+  { intensity: 200, distance: lampHight+10, position: [11.5, 11.8, lampHight]},
+  { intensity: 200, distance: lampHight+10, position: [-12.1, 12.0, lampHight]}
+];
+
+const lampLights = lampConfigs.map(config => {
+  const light = new THREE.SpotLight(lampColor, 1, config.distance);
+  light.intensity = config.intensity;
+  light.position.set(...config.position);
+  light.target.position.set(config.position[0], config.position[1], 0);
+  return light;
+});
+
+
+
+
+
+const outsidelamp = lampConfigs.map(config => {
+ const lamp = createSphere(0xb5bdc9, config.position[0], config.position[1], lampHight-7, 1);
+  return lamp;
+});
+
+outsidelamp.forEach(lamp => scene.add(lamp));
 
 // ----------------------------------------------------------- Even listners -----------------------------------------------------------
 
@@ -386,6 +435,13 @@ daynightButton.addEventListener('click', () => {
     scene.remove(sun);
     bulbLights.forEach(light => scene.add(light));
     nightSound.play();
+
+    outsidelamp.forEach(lamp => lamp.material.color.set(0xffffff));
+    lampLights.forEach(light => scene.add(light));
+    lampLights.forEach(light => scene.add(light.target));
+
+
+
     daynightButton.textContent = 'Switch to Day';
   } 
   else {
@@ -396,11 +452,17 @@ daynightButton.addEventListener('click', () => {
     scene.remove(moon);
     nightSound.pause();
     scene.add(sun);
+
+    outsidelamp.forEach(lamp => lamp.material.color.set(0xb5bdc9));
+    lampLights.forEach(light => scene.remove(light));
+    lampLights.forEach(light => scene.remove(light.target));
+
+
+
     daynightButton.textContent = 'Switch to Night';
   }
   itsDay = !itsDay;
 });
-
 
 
 // --- Evening view
@@ -514,6 +576,11 @@ let thunderDuration = 5;
 
 // Animation function
 function animate() {
+
+    stats.begin()
+    stats.end()
+
+
     requestAnimationFrame(animate);
 
     if (isAnimating && house) {
