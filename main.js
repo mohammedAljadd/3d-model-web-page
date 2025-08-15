@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
 import {loadAudio, prepareTextureMaterial, doorPivotSetup, createSphere, toggleOpenDoor, createLampost} from './utils.js';
+import gsap from 'gsap'; // Smoothly animates object properties over time (camera position, target, etc.)
 import Stats from 'stats.js'
 
 const stats = new Stats()
@@ -343,19 +344,28 @@ outsidelamp.forEach(lamp => scene.add(lamp));
 
 // --- Views controll
 document.getElementById('topView').addEventListener('click', () => {
-    camera.position.set(0, 0, 35);
-    controls.update();
+    gsap.to(camera.position, { x: 0, y: 0, z: 35, duration: 1,
+        onUpdate: () => {
+            controls.update(); // Update controls
+        }
+    });
 });
 
 document.getElementById('frontView').addEventListener('click', () => {
-    camera.position.set(0, -20, 5);
-    controls.update();
+    gsap.to(camera.position, { x: 0, y: -20, z: 5, duration: 1,
+        onUpdate: () => {
+            controls.update(); // Update controls
+        }
+    });
 });
 
 document.getElementById('backView').addEventListener('click', () => {
-    camera.position.set(0, 20, 5);
     camera.up.set(0, 0, 1); // camera got flipped
-    controls.update();
+    gsap.to(camera.position, { x: 0, y: 20, z: 5, duration: 1,
+        onUpdate: () => {
+            controls.update(); // Update controls
+        }
+    });
 
 });
 
@@ -371,21 +381,22 @@ animateButton.addEventListener('click', () => {
 
 
 
-// --- House Toor controll
+// --- House Tour controll
 const walkthroughSteps = [
   { position: new THREE.Vector3(3.5, -7, 2), target: new THREE.Vector3(3.5, 7, 2), action: 'openFrontDoor' },
   { position: new THREE.Vector3(3.5, -2.4, 2), target: new THREE.Vector3(3.5, 5, 2), action: 'openInnerDoor' },
+  { position: new THREE.Vector3(3.5, 0, 2), target: new THREE.Vector3(-2, 2, 2), action: '' },
   { position: new THREE.Vector3(3.5, 0, 2), target: new THREE.Vector3(-2, 2, 2), action: 'openInnerDoor' },
   { position: new THREE.Vector3(1, 0, 2), target: new THREE.Vector3(1, 5, 3), action: 'Look up stairs' },
-  { position: new THREE.Vector3(1, 5, 3), target: new THREE.Vector3(-1, -5, 4), action: 'Claim up first stairs' },
-  { position: new THREE.Vector3(0, 5, 3), target: new THREE.Vector3(0, -5, 4), action: 'Look up second stairs' },
+  { position: new THREE.Vector3(1, 4.5, 3), target: new THREE.Vector3(-1, -5, 4), action: 'Claim up first stairs' },
+  { position: new THREE.Vector3(0, 4.5, 3), target: new THREE.Vector3(0, -5, 4), action: 'Look up second stairs' },
   { position: new THREE.Vector3(0, 2, 5), target: new THREE.Vector3(2, -2, 5), action: 'Claim up second stairs' },
   { position: new THREE.Vector3(0, 2, 5), target: new THREE.Vector3(2, -2, 5), action: 'open_Top_Inner_Door_Left' },
   { position: new THREE.Vector3(1, 0, 5), target: new THREE.Vector3(1, -10, 5), action: 'Get close to Top Room' },
   { position: new THREE.Vector3(1, 0, 5), target: new THREE.Vector3(1, -10, 5), action: 'close_Top_Inner_Door_Left' },
   { position: new THREE.Vector3(1, -1, 5), target: new THREE.Vector3(-2.5, -10, 5), action: 'inspect top room' },
   { position: new THREE.Vector3(1, -1, 5), target: new THREE.Vector3(1, 10, 5), action: 'open_Top_Inner_Door_Left' },
-  { position: new THREE.Vector3(0, 5, 3), target: new THREE.Vector3(2, -5, 3), action: 'claim down second stairs' },
+  { position: new THREE.Vector3(0, 4.5, 3), target: new THREE.Vector3(2, -5, 3), action: 'claim down second stairs' },
   { position: new THREE.Vector3(1, 0, 2), target: new THREE.Vector3(2, 5, 2), action: 'claim down first stairs' },
   { position: new THREE.Vector3(3, 0, 2), target: new THREE.Vector3(3, 5, 2), action: 'Look at back door' },
   { position: new THREE.Vector3(3, 0, 2), target: new THREE.Vector3(3, 5, 2), action: 'openBackDoor' },
@@ -400,11 +411,27 @@ document.getElementById('walkthorw').addEventListener('click', () => {
 
     const step = walkthroughSteps[currentStep];
     
-    // Move camera
-    camera.position.copy(step.position);
-    controls.target.copy(step.target);
-    camera.up.set(0, 0, 1); 
-    controls.update();
+    // Move camera smoothly
+    gsap.to(camera.position, {
+        x: step.position.x,
+        y: step.position.y,
+        z: step.position.z,
+        duration: 2
+    });
+
+    // Camera looks at this target smoothly
+    gsap.to(controls.target, {
+        x: step.target.x, 
+        y: step.target.y,
+        z: step.target.z,
+        duration: 2,
+        onUpdate: () => {
+          camera.up.set(0, 0, 1); // camerea got flipped in some steps
+          controls.update();
+        }
+    });
+
+      
 
     if (step.action) {
         const button = document.getElementById(step.action);
