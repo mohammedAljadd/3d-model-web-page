@@ -300,7 +300,7 @@ const bulbLights = bulbConfigs.map(config => {
 
 // --- Lamposts
 
-const lampHight = 20;
+const lampHight = 17;
 
 const lampPost1 = createLampost(-11.8, -12.0, lampHight);
 const lampPost2 = createLampost(11.5, -11.6, lampHight);
@@ -315,17 +315,24 @@ scene.add(lampPost4);
 
 const lampColor = 0xf7f181;
 const lampConfigs = [
-  { intensity: 200, distance: lampHight+10, position: [-11.8, -12.0, lampHight]},
-  { intensity: 200, distance: lampHight+10, position: [11.5, -11.6, lampHight]},
-  { intensity: 200, distance: lampHight+10, position: [11.5, 11.8, lampHight]},
-  { intensity: 200, distance: lampHight+10, position: [-12.1, 12.0, lampHight]}
+  { id : 1, intensity: 200, distance: lampHight+10, position: [-11.8, -12.0, lampHight]},
+  { id : 2, intensity: 200, distance: lampHight+10, position: [11.5, -11.6, lampHight]},
+  { id : 3, intensity: 200, distance: lampHight+10, position: [11.5, 11.8, lampHight]},
+  { id : 4, intensity: 200, distance: lampHight+10, position: [-12.1, 12.0, lampHight]}
 ];
 
 const lampLights = lampConfigs.map(config => {
   const light = new THREE.SpotLight(lampColor, 1, config.distance);
   light.intensity = config.intensity;
   light.position.set(...config.position);
-  light.target.position.set(config.position[0], config.position[1], 0);
+
+    // Set light target slightly offset from the exact position below the lamp
+    let x = config.position[0];
+    let y = config.position[1];
+    
+    light.target.position.set(x/1.2, y/1.2, 0);
+  
+  
   return light;
 });
 
@@ -334,7 +341,7 @@ const lampLights = lampConfigs.map(config => {
 
 
 const outsidelamp = lampConfigs.map(config => {
- const lamp = createSphere(0xb5bdc9, config.position[0], config.position[1], lampHight-7, 1);
+ const lamp = createSphere(0xb5bdc9, config.position[0], config.position[1], lampHight, 1);
   return lamp;
 });
 

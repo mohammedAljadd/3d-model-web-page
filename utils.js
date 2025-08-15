@@ -124,6 +124,6 @@ export function createLampost(x, y, lampHight){
     const postGeometry = new THREE.BoxGeometry(0.3, 0.3, lampHight);
     const postMaterial = new THREE.MeshStandardMaterial({color: 0xf5dedc});
     const lampPost = new THREE.Mesh(postGeometry, postMaterial);
-    lampPost.position.set(x, y, 2);
+    lampPost.position.set(x, y, lampHight/2);
     return lampPost;
 }
