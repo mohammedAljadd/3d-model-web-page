@@ -240,8 +240,6 @@ const rainMaterial = new THREE.LineBasicMaterial({ color: 0x96dafa, transparent:
 
 const rain = new THREE.LineSegments(rainrGeometry, rainMaterial);
 
-const axesHelper = new THREE.AxesHelper( 50 );
-scene.add( axesHelper );
 // ---------------------------------------------------- Night objects : sun, bulblight.... ----------------------------------------------------
 // Thunderstormes : connected white lines
 const thunderPoints = 20;
