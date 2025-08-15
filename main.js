@@ -243,7 +243,7 @@ const positionAttribute = thunderLine.geometry.getAttribute( 'position' );
 thunderLine.geometry.setDrawRange( 0, 0 );
 
 
-
+console.log('THREE revision:', THREE.REVISION);
 
 
 // Add Sun and Moon
