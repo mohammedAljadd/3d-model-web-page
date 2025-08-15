@@ -446,16 +446,25 @@ document.getElementById('walkthorw').addEventListener('click', () => {
 
     if (step.action) {
         const button = document.getElementById(step.action);
+        let doorDuration = 1;
         if (button) button.click();
         
         else if(step.action==='open_Top_Inner_Door_Left'){
           const doorPivot = doorPivots["Top_Inner_Door_Left"];
-          doorPivot.rotation.z = -angle;
+       
+          gsap.to(doorPivot.rotation, {
+            z: -angle,
+            duration: doorDuration
+        });
         }
 
         else if(step.action==='close_Top_Inner_Door_Left'){
           const doorPivot = doorPivots["Top_Inner_Door_Left"];
-          doorPivot.rotation.z = angle;
+          
+          gsap.to(doorPivot.rotation, {
+            z: angle,
+            duration: doorDuration
+        });
         }
     }
 

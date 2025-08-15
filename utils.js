@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import gsap from 'gsap';
 
 export function loadAudio(file, loop = true, volume = 0.5, listener) {
     const audioLoader = new THREE.AudioLoader();
@@ -100,7 +101,7 @@ export function toggleOpenDoor(doorPosition, doorPivots, angle){
         angle = -angle;
     }
 
-    
+    let duration = 0.5;
     // doorPosition : Front, Inner, Back
     const button = document.getElementById('open'+doorPosition+'Door');
     let isDoorClosed = true;
@@ -113,11 +114,18 @@ export function toggleOpenDoor(doorPosition, doorPivots, angle){
 
 
     if (isDoorClosed) {
-        doorPivot.rotation.z = angle;
+         gsap.to(doorPivot.rotation, {
+            z: angle,
+            duration: duration
+        });
+
         isDoorClosed = false;
         button.textContent = 'Close '+ doorPosition+ ' Door';
     } else {
-        doorPivot.rotation.z = 0;
+        gsap.to(doorPivot.rotation, {
+            z: 0,
+            duration: duration
+        });
         isDoorClosed = true;
         button.textContent = 'Open '+ doorPosition+ ' Door';
     }
