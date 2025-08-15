@@ -411,19 +411,23 @@ const walkthroughSteps = [
 ];
 
 let currentStep = 0;
-
+let duration = 2;
 // Angle of rotation of the door
 const angle = Math.PI / 2.5;
 document.getElementById('walkthorw').addEventListener('click', () => {
 
     const step = walkthroughSteps[currentStep];
     
+    if(step.action==="Claim up first stairs"){
+      duration = 3;
+    }
+
     // Move camera smoothly
     gsap.to(camera.position, {
         x: step.position.x,
         y: step.position.y,
         z: step.position.z,
-        duration: 2
+        duration: duration
     });
 
     // Camera looks at this target smoothly
@@ -431,7 +435,7 @@ document.getElementById('walkthorw').addEventListener('click', () => {
         x: step.target.x, 
         y: step.target.y,
         z: step.target.z,
-        duration: 2,
+        duration: duration,
         onUpdate: () => {
           camera.up.set(0, 0, 1); // camerea got flipped in some steps
           controls.update();
