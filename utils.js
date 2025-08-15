@@ -95,6 +95,12 @@ export function createSphere(color, x, y, z, radius){
 
 
 export function toggleOpenDoor(doorPosition, doorPivots, angle){
+
+    if(doorPosition === 'Back'){
+        angle = -angle;
+    }
+
+    
     // doorPosition : Front, Inner, Back
     const button = document.getElementById('open'+doorPosition+'Door');
     let isDoorClosed = true;
@@ -107,7 +113,6 @@ export function toggleOpenDoor(doorPosition, doorPivots, angle){
 
 
     if (isDoorClosed) {
-        
         doorPivot.rotation.z = angle;
         isDoorClosed = false;
         button.textContent = 'Close '+ doorPosition+ ' Door';
