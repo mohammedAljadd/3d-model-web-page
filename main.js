@@ -8,6 +8,13 @@ const stats = new Stats()
 stats.showPanel(0) // 0: fps, 1: ms, 2: mb, 3+: custom
 document.body.appendChild(stats.dom)
 
+
+// Move fps to right
+stats.dom.style.position = 'fixed';
+stats.dom.style.top = '60px';
+stats.dom.style.right = '10px';
+stats.dom.style.left = 'auto';
+stats.dom.style.zIndex = '1000';
 // ------------------------------------------------- Base config for Three.js -----------------------------------------------------------
 // Renderer
 const canvas = document.querySelector('#c');
