@@ -559,8 +559,8 @@ let showThunderstormes = false;
 const thunderButton = document.getElementById('startThunderstorm');
 
 thunderButton.addEventListener('click', () => {
-  showThunderstormes = true;
-let x = 0, y = 1000, z = 700;
+showThunderstormes = true;
+let x = 0, y = 1000, z = 1000;
 
 for ( let i = 0; i < positionAttribute.count; i ++ ) {
     
