@@ -36,8 +36,8 @@
 
 ### 🔊 Audio Integration
 
-- **Night Sounds**:Iinsect sounds for nighttime atmosphere
-- **Rain**: rainfall sound
+- **Night Sounds**: Insect sounds for nighttime atmosphere
+- **Rain**: Rainfall sound
 - **Thunderstorm**: Thunder sound effects
 
 ### 📊 Performance Monitoring
@@ -147,7 +147,8 @@ Before importing into Three.js, the model was optimized and modified in Blender 
 
 ## ✨ See it in Action
 
-[Live Demo](https://mohammedaljadd.github.io/3d-model-web-page/)
+<a href="https://mohammedaljadd.github.io/3d-model-web-page/" target="_blank">Live Demo</a>
+
 
 
 ## 🤝 Contributing
@@ -159,8 +160,6 @@ Contributions are welcome! Please feel free to submit a Pull Request. For major 
 Mohammed Al Jadd
 
 
-**LinkedIn:** [@aljadd](https://www.linkedin.com/in/aljadd)
+**LinkedIn:** <a href="https://www.linkedin.com/in/aljadd" target="_blank">@aljadd</a>
 
-**GitHub:** [@mohammedAljadd](https://github.com/mohammedAljadd)
-
-
+**GitHub:** <a href="https://github.com/mohammedAljadd" target="_blank">@mohammedAljadd</a>
