@@ -14,7 +14,7 @@
 
 - **3D house model** : Includes two floors with rooms, walls, stairs, and glass windows
 - **Realistic textures** : Brick walls, roof tiles, wooden doors, and grass terrain
-- **Door controllers** : Open and close multiple doors `independently`
+- **Door controllers** : Open and close multiple doors `independently` and `smoothly`
 - **Lamp Posts** : Decorative street-style lamp posts for outdoor lighting at night (*added via Three.js*)
 
 
