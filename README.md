@@ -149,6 +149,10 @@ Before importing into Three.js, the model was optimized and modified in Blender 
 
 <a href="https://mohammedaljadd.github.io/3d-model-web-page/" target="_blank">Live Demo</a>
 
+## Deployment
+
+- **GitHub Pages**: The project is automatically deployed to GitHub Pages using GitHub Actions. Any updates to the main branch trigger a deployment, so the live demo is always up-to-date.
+
 
 
 ## 🤝 Contributing
